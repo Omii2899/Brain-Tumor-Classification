@@ -1,0 +1,15 @@
+To Get started with the Project Execute the Following steps : 
+
+1. Clone the Repo
+https://github.com/Omii2899/Brain-Tumor-Detection.git
+
+2.Create a Python Virtual Env 
+pip install virtualenv
+
+python -m venv <virtual-environment-name>
+
+3. Install the dependencies using Requirements File
+pip install -r requirements.txt
+
+4. Get the data from Remote Source
+dvc pull
