@@ -1,70 +1,44 @@
-# Base Image
 FROM python:3.8
 LABEL maintainer="Aadarsh"
 
-# Arguments that can be set with docker build
 ARG AIRFLOW_VERSION=2.0.2
 ARG AIRFLOW_HOME=/opt/airflow
 
-# Export the environment variable AIRFLOW_HOME where airflow will be installed
+WORKDIR ${AIRFLOW_HOME}
 ENV AIRFLOW_HOME=${AIRFLOW_HOME}
 
-# Install dependencies and tools
 RUN apt-get update -yqq && \
-    apt-get upgrade -yqq && \
-    apt-get install -yqq --no-install-recommends \ 
+    apt-get install -yqq --no-install-recommends \
     wget \
-    libczmq-dev \
     curl \
-    libssl-dev \
     git \
-    inetutils-telnet \
-    bind9utils freetds-dev \
-    libkrb5-dev \
-    libsasl2-dev \
-    libffi-dev libpq-dev \
-    freetds-bin build-essential \
-    default-libmysqlclient-dev \
-    apt-utils \
-    rsync \
-    zip \
-    unzip \
     gcc \
-    vim \
-    locales \
-    && apt-get clean
+    && apt-get clean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./constraints-3.8.txt /constraints-3.8.txt
+COPY ./requirements.txt /requirements.txt 
 
-# Upgrade pip
-# Create airflow user 
-# Install apache airflow with subpackages
-RUN pip install --upgrade pip && \
-    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && \
-    pip install apache-airflow[postgres]==${AIRFLOW_VERSION} --constraint /constraints-3.8.txt
+# Upgrade pip separately to catch any issues
+RUN pip install --upgrade pip 
 
-# Copy the entrypoint.sh from host to container (at path AIRFLOW_HOME)
-COPY ./entrypoint.sh ./entrypoint.sh
+# Add airflow user separately to catch any issues
+RUN useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow
 
-# Set the entrypoint.sh file to be executable
-RUN chmod +x ./entrypoint.sh
+# Install Apache Airflow separately to catch any issues
+RUN pip install apache-airflow==${AIRFLOW_VERSION} 
 
-# Set the owner of the files in AIRFLOW_HOME to the user airflow
+# Install requirements separately to catch any issues
+RUN pip install -r /requirements.txt 
+
+COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
+RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
+#copy dags folder 
+COPY ./dags ${AIRFLOW_HOME}/dags
+
 RUN chown -R airflow: ${AIRFLOW_HOME}
-
-# Set the username to use
 USER airflow
 
-# Set workdir (it's like a cd inside the container)
-WORKDIR ${AIRFLOW_HOME}
-
-# Create the dags folder which will contain the DAGs
-RUN mkdir dags
-
-# Expose ports (just to indicate that this container needs to map port)
 EXPOSE 8080
 
-# Execute the entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
-
-    
+ENTRYPOINT [ "/opt/airflow/entrypoint.sh" ]

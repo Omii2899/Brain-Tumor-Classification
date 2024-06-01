@@ -2,5 +2,5 @@ Steps to use the remote tracking mlflow server
 
 1. import os, !pip install google-cloud-storage, !pip install google-cloud
 2. os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'path/to/json/file'
-3. mlflow.set_tracking_uri('path to external_api@port 5000')
+3. mlflow.set_tracking_uri('api-ip-address:5000')
 4. mlflow.set_experiment('Brain-Tumor-Classification')
