@@ -38,7 +38,7 @@ COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
 RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
 
 # Copy dags folder 
-COPY ./src/dags ${AIRFLOW_HOME}/dags
+COPY ./src ${AIRFLOW_HOME}/src
 
 RUN chown -R airflow: ${AIRFLOW_HOME}
 USER airflow
