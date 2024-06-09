@@ -3,3 +3,4 @@ kaggle
 dvc
 google-cloud-storage
 requests
+dvc[gs]
