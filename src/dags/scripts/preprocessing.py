@@ -1,6 +1,6 @@
 import tensorflow
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from logger import setup_logging 
+from scripts.logger import setup_logging 
 
 def preprocessing_for_training():
 
