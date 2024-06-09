@@ -17,28 +17,34 @@ RUN apt-get update -yqq && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
+# Install Google Cloud SDK
+RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-479.0.0-linux-x86_64.tar.gz \
+    && tar -xf google-cloud-cli-479.0.0-linux-x86_64.tar.gz \
+    && ./google-cloud-sdk/install.sh 
+
+# Add gcloud to PATH
+ENV PATH $PATH:/opt/airflow/google-cloud-sdk/bin
+
 COPY ./requirements.txt /requirements.txt 
+COPY ./src/keys/tensile-topic-424308-d9-7418db5a1c90.json ${AIRFLOW_HOME}/tensile-topic-424308-d9-7418db5a1c90.json
 
 # Upgrade pip separately to catch any issues
-RUN pip install --upgrade pip 
-
-# Add airflow user separately to catch any issues
-RUN useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow
-
-# Install Apache Airflow separately to catch any issues
-RUN pip install apache-airflow==${AIRFLOW_VERSION} 
-
-# Install requirements separately to catch any issues
-RUN pip install -r /requirements.txt 
+RUN pip install --upgrade pip && \
+    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && \
+    pip install apache-airflow==${AIRFLOW_VERSION} && \
+    pip install -r /requirements.txt
 
 COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
 RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
-#copy dags folder 
-COPY ./dags ${AIRFLOW_HOME}/dags
+
+# Copy dags folder 
+COPY ./src/dags ${AIRFLOW_HOME}/dags
 
 RUN chown -R airflow: ${AIRFLOW_HOME}
 USER airflow
 
+ENV GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/tensile-topic-424308-d9-7418db5a1c90.json
 EXPOSE 8080
+EXPOSE 8888
 
 ENTRYPOINT [ "/opt/airflow/entrypoint.sh" ]

@@ -1,6 +1,6 @@
 apache-airflow==2.0.2
-kaggle
 dvc
-google-cloud-storage
 requests
+apache-airflow-providers-google
+notebook
 dvc[gs]
