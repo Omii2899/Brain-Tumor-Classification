@@ -9,7 +9,7 @@ from scripts.preprocessing import preprocessing_for_testing_inference, preproces
 from scripts.statistics import capture_histograms
 
 
-def check_source():
+def check_source(logger):
      """
      Checks if the given GCS object (prefix) is a directory.
      
@@ -18,7 +18,7 @@ def check_source():
      :return: True if the prefix is a directory, False otherwise.
      """
      bucket_name = "data-source-brain-tumor-classification"
-     logger = setup_logging()
+     #logger = setup_logging()
      logger.info("Started Method: Check_Source")
      client = storage.Client()
      bucket = client.bucket(bucket_name)
@@ -31,8 +31,8 @@ def check_source():
      logger.warning("Finished Method - Source Not Found")
      return False
 
-def download_files(flag):
-     logger = setup_logging()
+def download_files(logger, flag):
+     #logger = setup_logging()
      logger.info("Method Started: Download_Files ")
      if flag :
           bucket_name = "data-source-brain-tumor-classification"
@@ -70,13 +70,14 @@ dag = DAG("data_pipeline",
 check_source = PythonOperator(
     task_id = "check_source",
     python_callable = check_source,
+    op_args = [logger],
     dag = dag,
 )
 
 download_data = PythonOperator(
      task_id = 'download_data',
      python_callable = download_files,
-     op_args = [check_source.output],
+     op_args = [logger, check_source.output],
      dag = dag,
 )
 
@@ -84,19 +85,21 @@ download_data = PythonOperator(
 capture_statistics = PythonOperator(
      task_id = 'capture_statistics',
      python_callable = capture_histograms,
+     op_args = [logger],
      dag = dag
 )
 
 augment_transform_training_data = PythonOperator(
      task_id = 'augment_input_data',
      python_callable = preprocessing_for_training,
+     op_args = [logger],
      dag = dag
 )
 
 transform_testing_data = PythonOperator(
      task_id = 'transform_testing_data',
      python_callable = preprocessing_for_testing_inference,
-     op_args = ['./data/Testing', 32], # path,batch size
+     op_args = [logger, './data/Testing', 32], # path,batch size
      dag = dag
 )
 
