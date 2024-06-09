@@ -35,7 +35,7 @@ def preprocessing_for_training():
     return train_generator
 
 def preprocessing_for_testing_inference(path, batchSize):
-    
+
     # Invoking the global logger method
     logger = setup_logging()
     logger.info("Started method: preprocessing_for_testing_inference")

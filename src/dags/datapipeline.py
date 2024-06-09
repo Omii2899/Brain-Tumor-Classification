@@ -7,6 +7,10 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.hooks.gcs import gcs_object_is_directory
 # from airflow.models import Connection
 # from airflow import settings
+from src.scripts.logger import setup_logging
+from src.scripts.preprocessing import preprocessing_for_testing_inference
+from src.scripts.preprocessing import preprocessing_for_training
+from src.scripts.statistics import capture_histograms
 
 
 # def create_connection():
@@ -77,6 +81,10 @@ def download_blob(flag):
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
 
+# Invoking the global logger method
+logger = setup_logging()
+logger.info("Started DAG pipeline: datapipeline")
+
 default_args = {
      "owner": "aadarsh",
      "retries" : 5,
@@ -84,22 +92,44 @@ default_args = {
      }
 
 dag = DAG("data_pipeline",
-     schedule_interval = "@once", default_args = default_args,)
+     schedule_interval = "@once", default_args = default_args)
+
 
 check_source = PythonOperator(
     task_id = "check_source",
     python_callable = check_source,
-    dag = dag,
+    dag = dag
 )
+
 
 download_data = PythonOperator(
      task_id = 'download_data',
      python_callable = download_blob,
      op_args = [check_source.output],
-     dag = dag,
+     dag = dag
+)
+
+capture_statistics = PythonOperator(
+     task_id = 'capture_statistics',
+     python_callable = capture_histograms,
+     dag = dag
+)
+
+augment_transform_training_data = PythonOperator(
+     task_id = 'augment_input_data',
+     python_callable = preprocessing_for_training,
+     dag = dag
+)
+
+transform_testing_data = PythonOperator(
+     task_id = 'transform_testing_data',
+     python_callable = preprocessing_for_testing_inference,
+     op_args = ['./data/Testing', 32], # path,batch size
+     dag = dag
 )
 
 
-check_source >> download_data
+
+check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
 
 
