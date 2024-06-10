@@ -1,9 +1,26 @@
 # Brain-Tumor-Classification
 
-[Aadrash Siddha](https://github.com/Omii2899) | [Akshita Singh](https://github.com/akshita-singh-2000) | [Praneith Ranganath](https://github.com/Praneith) | [Shaun Kirtan](https://github.com/) |  [Yashasvi Sharma](https://github.com/yashasvi14) 
-
-
 This repository contains the code and configuration files for a Brain Tumor Detection MLOps project. The project includes data versioning, data pipelines, and Docker for containerization.
+
+## Introduction
+
+Brain tumors are a significant health challenge, with approximately 24,810 adults in the United States diagnosed in 2023. The complexity and variability of brain tumors make accurate diagnosis difficult, especially in regions lacking skilled medical professionals. This project leverages machine learning to develop an end-to-end ML pipeline for automated brain tumor detection, aiming to provide scalable, reliable, and timely diagnostic support.
+
+## Dataset Information
+
+The dataset combines MRI images from three sources: figshare, SARTAJ, and Br35H. It includes 7023 JPEG images of human brains, categorized into four classes: glioma, meningioma, no tumor, and pituitary.
+
+- **Dataset Name**: Brain Tumor MRI Images
+- **Size**: 7023 images
+- **Format**: JPEG
+- **Classes**: Glioma, Meningioma, No Tumor, Pituitary
+- **Sources**:
+  - [figshare](https://figshare.com/articles/dataset/brain_tumor_dataset/1512427)
+  - [SARTAJ](https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri)
+  - [Br35H](https://www.kaggle.com/datasets/ahmedhamada0/brain-tumor-detection?select=no)
+
+All data used are sourced from publicly available datasets with proper usage permissions.
+
 
 ## Project workflow
 
@@ -151,16 +168,26 @@ dvc pull
 To run the project, you can use Docker for containerization.
 
 1. Build the Docker Image
-Build the Docker image using the following command:
-
 ```
-docker build -t brain-tumor-detection .
+docker build -t your-image-name:tag .
+```
+2. Verify the image 
+```
+docker images
 ```
 
-2. Run the Docker Container
-Run the Docker container with the following command:
+3. Run the built image
 ```
 docker run -it --rm -p 8000:8000 brain-tumor-detection
 ```
 
 The application should now be running and accessible at <code> http://localhost:8000 </code>.
+
+4. Run the data pipeline
+```
+python src/dags/datapipeline.py
+```
+
+## Contributors
+
+[Aadrash Siddha](https://github.com/Omii2899) <br> [Akshita Singh](https://github.com/akshita-singh-2000) <br>  [Praneith Ranganath](https://github.com/Praneith) <br>  [Shaun Kirtan](https://github.com/) <br>   [Yashasvi Sharma](https://github.com/yashasvi14) 
