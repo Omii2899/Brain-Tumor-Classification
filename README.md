@@ -88,12 +88,14 @@ dvc pull
             <li><strong>.gitignore</strong>: Specifies which DVC files should be ignored by Git.</li>
         </ul>
     </li>
+    <br>
     <li><strong>Data</strong>
         <ul>
             <li><strong>Testing</strong>: Contains subfolders with testing images.</li>
             <li><strong>Training</strong>: Contains subfolders with training images.</li>
         </ul>
     </li>
+    <br>
     <li><strong>Source/DAG </strong>
         <ul>
             <li><strong>datapipeline.py</strong>: Orchestrates the data pipeline process, integrating various preprocessing and processing scripts.</li>
@@ -106,6 +108,7 @@ dvc pull
             </li>
         </ul>
     </li>
+    <br>
     <li><strong>Configuration and Ignore Files</strong>
         <ul>
             <li><strong>.dvcignore</strong>: Specifies files and directories that DVC should ignore.</li>
@@ -113,16 +116,18 @@ dvc pull
             <li><strong>data.dvc</strong>: DVC data tracking file.</li>
         </ul>
     </li>
+    <br>
     <li><strong>Docker Configuration</strong>
         <ul>
             <li><strong>Dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
         </ul>
     </li>
+    <br>
     <li><strong>Entry Point</strong>
         <ul>
             <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
         </ul>
-    </li>
+    </li><br>
     <li><strong>Dependencies</strong>
         <ul>
             <li><strong>requirements.txt</strong>: Lists the Python dependencies needed for the project.</li>
