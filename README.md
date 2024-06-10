@@ -57,15 +57,15 @@ dvc pull
 ### Description of Files and Folders
 #### Project Structure:
 ```
-├── DVC
+├── .dvc
 │   ├── config
 │   ├── .gitignore
-├── Data
+├── data
 │   ├── testing
 │   │   ├── ...
 │   ├── training
 │   │   ├── ...
-├── Dag
+├── src/dags
 │   ├── datapipeline.py
 │   └── scripts
 │       ├── logger.py
@@ -74,7 +74,7 @@ dvc pull
 ├── .dvcignore
 ├── .gitignore
 ├── data.dvc
-├── Dockerfile
+├── dockerfile
 ├── entrypoint.sh
 ├── requirements.txt
 ```
@@ -136,4 +136,21 @@ dvc pull
 </ol>
 
 
+### Running the Project
+To run the project, you can use Docker for containerization.
 
+1. Build the Docker Image
+Build the Docker image using the following command:
+
+'''
+docker build -t brain-tumor-detection .
+'''
+
+2. Run the Docker Container
+Run the Docker container with the following command:
+
+'''
+docker run -it --rm -p 8000:8000 brain-tumor-detection
+'''
+
+The application should now be running and accessible at <code> http://localhost:8000 </code>.
