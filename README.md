@@ -164,12 +164,12 @@ dvc pull
 </ol>
 
 
-### Running the Project
-To run the project, you can use Docker for containerization.
+### Running the data pipeline
+To run the pipeline, you can use Docker for containerization.
 
 1. Build the Docker Image
 ```
-docker build -t your-image-name:tag .
+docker build -t image-name:tag .
 ```
 2. Verify the image 
 ```
@@ -183,7 +183,7 @@ docker run -it --rm -p 8000:8000 brain-tumor-detection
 
 The application should now be running and accessible at <code> http://localhost:8000 </code>.
 
-4. Run the data pipeline
+4. Trigger the airflow UI
 ```
 python src/dags/datapipeline.py
 ```
