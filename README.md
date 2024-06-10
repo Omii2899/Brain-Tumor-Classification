@@ -1,5 +1,8 @@
 # Brain-Tumor-Classification
 
+[Aadrash Siddha](https://github.com/Omii2899) | [Akshita Singh](https://github.com/akshita-singh-2000) | [Praneith Ranganath](https://github.com/Praneith) | [Shaun Kirtan](https://github.com/) |  [Yashasvi Sharma](https://github.com/yashasvi14) 
+
+
 This repository contains the code and configuration files for a Brain Tumor Detection MLOps project. The project includes data versioning, data pipelines, and Docker for containerization.
 
 ## Project workflow
