@@ -32,7 +32,7 @@ def preprocessing_for_training():
     )
 
     logger.info("Finished method: preprocessing_for_training")
-    return train_generator
+    #return train_generator
 
 def preprocessing_for_testing_inference(path, batchSize):
 
@@ -54,5 +54,5 @@ def preprocessing_for_testing_inference(path, batchSize):
     )
 
     logger.info("Finished method: preprocessing_for_testing_inference")
-    return test_generator
+    #return test_generator
 

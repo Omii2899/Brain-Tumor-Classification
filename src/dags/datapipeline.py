@@ -50,6 +50,8 @@ def download_files(flag):
                     # print(f"{blob.name} - {destination_file_name}")
                     blob.download_to_filename(destination_file_name)
           logger.info("Method Finished - Files Downloaded")
+
+
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
 
@@ -59,7 +61,7 @@ logger.info("Started DAG pipeline: datapipeline")
 
 default_args = {
      "owner": "aadarsh",
-     "retries" : 5,
+     "retries" : 1,
      "start_date": datetime(2023, 6, 6)
      }
 
