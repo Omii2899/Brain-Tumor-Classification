@@ -169,7 +169,7 @@ To run the pipeline, you can use Docker for containerization.
 
 1. Build the Docker Image
 ```
-docker build -t image-name:tag .
+docker build -t image-name:tag-name .
 ```
 2. Verify the image 
 ```
@@ -178,7 +178,7 @@ docker images
 
 3. Run the built image
 ```
-docker run -it --rm -p 8000:8000 brain-tumor-detection
+docker run -it --rm -p 8000:8000 image-name:tag-name
 ```
 
 The application should now be running and accessible at <code> http://localhost:8000 </code>.
