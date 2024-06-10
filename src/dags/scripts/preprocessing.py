@@ -2,10 +2,10 @@ import tensorflow
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from scripts.logger import setup_logging 
 
-def preprocessing_for_training(logger):
+def preprocessing_for_training():
 
     # Invoking the global logger method
-    #logger = setup_logging()
+    logger = setup_logging()
     logger.info("Started method: preprocessing_for_training")
 
     path = './data/Training/'
@@ -34,10 +34,10 @@ def preprocessing_for_training(logger):
     logger.info("Finished method: preprocessing_for_training")
     return train_generator
 
-def preprocessing_for_testing_inference(logger, path, batchSize):
+def preprocessing_for_testing_inference(path, batchSize):
 
     # Invoking the global logger method
-    #logger = setup_logging()
+    logger = setup_logging()
     logger.info("Started method: preprocessing_for_testing_inference")
     logger.info(f"Image path: {path}")
     logger.info(f'Batch size: {batchSize}')
