@@ -3,4 +3,6 @@ dvc
 requests
 apache-airflow-providers-google
 notebook
+tensorflow
+opencv-python-headless
 dvc[gs]
