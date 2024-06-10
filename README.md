@@ -2,6 +2,10 @@
 
 This repository contains the code and configuration files for a Brain Tumor Detection MLOps project. The project includes data versioning, data pipelines, and Docker for containerization.
 
+## Project workflow
+
+![picture alt](images/deployment_architecture.png)
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your machine:
