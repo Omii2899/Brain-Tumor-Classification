@@ -56,7 +56,7 @@ dvc pull
 
 ### Description of Files and Folders
 #### Project Structure:
-
+```
 ├── DVC
 │   ├── config
 │   ├── .gitignore
@@ -77,55 +77,58 @@ dvc pull
 ├── Dockerfile
 ├── entrypoint.sh
 ├── requirements.txt
+```
 
 #### Source code files
-    <ol>
-        <li><strong>Data Version Control (DVC)</strong>
-            <ul>
-                <li><strong>config</strong>: DVC configuration file for setting up data versioning.</li>
-                <li><strong>.gitignore</strong>: Specifies which DVC files should be ignored by Git.</li>
-            </ul>
-        </li>
-        <li><strong>Data</strong>
-            <ul>
-                <li><strong>Testing</strong>: Contains subfolders with testing images.</li>
-                <li><strong>Training</strong>: Contains subfolders with training images.</li>
-            </ul>
-        </li>
-        <li><strong>Source/DAG </strong>
-            <ul>
-                <li><strong>datapipeline.py</strong>: Orchestrates the data pipeline process, integrating various preprocessing and processing scripts.</li>
-                <li><strong>scripts</strong>: 
-                    <ul>
-                        <li><strong>logger.py</strong>: Sets up and configures logging for the project. It creates a logger instance with a specific format and log level.</li>
-                        <li><strong>preprocessing.py</strong>: Handles image preprocessing for both training and testing phases using TensorFlow's <code>ImageDataGenerator</code>. It contains two primary functions: <code>preprocessing_for_training </code> that applies various augmentation techniques, such as normalization, rotation, width and height shifts, shearing, zooming, and horizontal flipping, to enhance the training datasetand and <code>preprocessing_for_testing_inference</code> for normalizing the data.</li>
-                        <li><strong>statistics.py</strong>: Captures statistics of each image in each class, generates histograms, and validates images against these histograms using OpenCV.</li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li><strong>Configuration and Ignore Files</strong>
-            <ul>
-                <li><strong>.dvcignore</strong>: Specifies files and directories that DVC should ignore.</li>
-                <li><strong>.gitignore</strong>: Specifies files and directories that Git should ignore.</li>
-                <li><strong>data.dvc</strong>: DVC data tracking file.</li>
-            </ul>
-        </li>
-        <li><strong>Docker Configuration</strong>
-            <ul>
-                <li><strong>Dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
-            </ul>
-        </li>
-        <li><strong>Entry Point</strong>
-            <ul>
-                <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
-            </ul>
-        </li>
-        <li><strong>Dependencies</strong>
-            <ul>
-                <li><strong>requirements.txt</strong>: Lists the Python dependencies needed for the project.</li>
-            </ul>
-        </li>
-    </ol>
+
+<ol>
+    <li><strong>Data Version Control (DVC)</strong>
+        <ul>
+            <li><strong>config</strong>: DVC configuration file for setting up data versioning.</li>
+            <li><strong>.gitignore</strong>: Specifies which DVC files should be ignored by Git.</li>
+        </ul>
+    </li>
+    <li><strong>Data</strong>
+        <ul>
+            <li><strong>Testing</strong>: Contains subfolders with testing images.</li>
+            <li><strong>Training</strong>: Contains subfolders with training images.</li>
+        </ul>
+    </li>
+    <li><strong>Source/DAG </strong>
+        <ul>
+            <li><strong>datapipeline.py</strong>: Orchestrates the data pipeline process, integrating various preprocessing and processing scripts.</li>
+            <li><strong>scripts</strong>: 
+                <ul>
+                    <li><strong>logger.py</strong>: Sets up and configures logging for the project. It creates a logger instance with a specific format and log level.</li>
+                    <li><strong>preprocessing.py</strong>: Handles image preprocessing for both training and testing phases using TensorFlow's <code>ImageDataGenerator</code>. It contains two primary functions: <code>preprocessing_for_training </code> that applies various augmentation techniques, such as normalization, rotation, width and height shifts, shearing, zooming, and horizontal flipping, to enhance the training datasetand and <code>preprocessing_for_testing_inference</code> for normalizing the data.</li>
+                    <li><strong>statistics.py</strong>: Captures statistics of each image in each class, generates histograms, and validates images against these histograms using OpenCV.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Configuration and Ignore Files</strong>
+        <ul>
+            <li><strong>.dvcignore</strong>: Specifies files and directories that DVC should ignore.</li>
+            <li><strong>.gitignore</strong>: Specifies files and directories that Git should ignore.</li>
+            <li><strong>data.dvc</strong>: DVC data tracking file.</li>
+        </ul>
+    </li>
+    <li><strong>Docker Configuration</strong>
+        <ul>
+            <li><strong>Dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
+        </ul>
+    </li>
+    <li><strong>Entry Point</strong>
+        <ul>
+            <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
+        </ul>
+    </li>
+    <li><strong>Dependencies</strong>
+        <ul>
+            <li><strong>requirements.txt</strong>: Lists the Python dependencies needed for the project.</li>
+        </ul>
+    </li>
+</ol>
+
 
 
