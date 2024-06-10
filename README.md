@@ -65,16 +65,20 @@ dvc pull
 │   ├── config
 │   ├── .gitignore
 ├── data
-│   ├── testing
+│   ├── Testing
 │   │   ├── ...
-│   ├── training
+│   ├── Training
 │   │   ├── ...
-├── src/dags
-│   ├── datapipeline.py
-│   └── scripts
-│       ├── logger.py
-│       ├── preprocessing.py
-│       └── statistics.py
+├── src
+│   │   
+│   ├── dags
+│   │   ├── scripts
+│   │       ├── logger.py
+│   │       ├── preprocessing.py
+│   │       ├── statistics.py
+│   │   ├── datapipeline.py
+│   └── keys
+│   │       ├── keyfile.json
 ├── .dvcignore
 ├── .gitignore
 ├── data.dvc
@@ -100,7 +104,7 @@ dvc pull
         </ul>
     </li>
     <br>
-    <li><strong>Source/DAG </strong>
+    <li><strong>Source </strong>
         <ul>
             <li><strong>datapipeline.py</strong>: Orchestrates the data pipeline process, integrating various preprocessing and processing scripts.</li>
             <li><strong>scripts</strong>: 
