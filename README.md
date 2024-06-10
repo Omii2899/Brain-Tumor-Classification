@@ -7,8 +7,11 @@ This repository contains the code and configuration files for a Brain Tumor Dete
 Before you begin, ensure you have the following installed on your machine:
 
 - Git
-- Python 3.8+
-- Docker
+- [Docker](https://www.docker.com/get-started/)
+- [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/start.html)
+- [DVC](https://airflow.apache.org/docs/apache-airflow/stable/start.html)
+- [Python](https://www.python.org/downloads/) 3.x
+- Pip (Python package installer)
 - DVC (Data Version Control)
 
 ## Getting Started
@@ -19,6 +22,10 @@ To get started with the project, follow these steps:
 
 Clone the repository using the following command:
 
-```bash
-git clone https://github.com/Omii2899/Brain-Tumor-Detection.git
+```
+git clone https://github.com/Omii2899/Brain-Tumor-Classification.git
+```
+```
 cd Brain-Tumor-Detection
+```
+
