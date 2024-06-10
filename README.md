@@ -53,4 +53,18 @@ Pull the data from the remote source using DVC:
 dvc pull
 ```
 
+### Description of Files and Folders
+Project Structure:
+    <ul>
+        <li><strong>DVC Folder</strong>: Contains DVC configuration and .gitignore file for managing data versioning.</li>
+        <li><strong>Data Folder</strong>: Contains subfolders for training and testing images.</li>
+        <li><strong>Dag Folder</strong>: Contains the <code>datapipeline.py</code> script for data preprocessing and pipeline management.</li>
+        <li><strong>.dvcignore</strong>: Specifies files and directories for DVC to ignore.</li>
+        <li><strong>.gitignore</strong>: Specifies files and directories for Git to ignore.</li>
+        <li><strong>data.dvc</strong>: DVC data tracking file.</li>
+        <li><strong>Dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
+        <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
+        <li><strong>requirements.txt</strong>: List of Python dependencies needed for the project.</li>
+    </ul>
+
 
