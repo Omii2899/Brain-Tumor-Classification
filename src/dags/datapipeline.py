@@ -97,7 +97,7 @@ check_source = PythonOperator(
 download_data = PythonOperator(
      task_id = 'download_data',
      python_callable = download_files,
-     #op_args = [check_source.output],
+     op_args = [check_source.output],
      dag = dag,
 )
 
