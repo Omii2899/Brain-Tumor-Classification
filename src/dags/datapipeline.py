@@ -4,6 +4,7 @@ from datetime import datetime
 from google.cloud import storage
 from airflow import configuration as conf
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
 from scripts.preprocessing import preprocessing_for_testing_inference, preprocessing_for_training
 from scripts.statistics import capture_histograms
@@ -87,6 +88,39 @@ dag = DAG("data_pipeline",
      schedule_interval = "@once", default_args = default_args)
 
 
+# Define function to notify failure or sucess via an email
+def notify_success(context):
+    success_email = EmailOperator(
+        task_id='success_email',
+        to='sharma.yasha@northeastern.edu',
+        subject='Success Notification from Airflow',
+        html_content='<p>The dag tasks succeeded.</p>',
+        dag=context['dag']
+    )
+    success_email.execute(context=context)
+
+def notify_failure(context):
+    failure_email = EmailOperator(
+        task_id='failure_email',
+        to='sharma.yasha@northeastern.edu',
+        subject='Failure Notification from Airflow',
+        html_content='<p>The dag tasks failed.</p>',
+        dag=context['dag']
+    )
+    failure_email.execute(context=context)
+
+# Define the email task
+send_email = EmailOperator(
+    task_id='send_email',
+    to='sharma.yasha@northeastern.edu',    # Email address of the recipient
+    subject='Notification from Airflow',
+    html_content='<p>This is a notification email sent from Airflow indicating that the dag was triggered</p>',
+    dag=dag,
+    on_failure_callback=notify_failure,
+    on_success_callback=notify_success
+)
+
+
 check_source = PythonOperator(
     task_id = "check_source",
     python_callable = check_source,
@@ -138,8 +172,6 @@ send_email = EmailOperator(
 
 check_source >> download_data >> capture_statistics
 capture_statistics >> [augment_transform_training_data, transform_testing_data] >> send_email
-
-
 
 
 
