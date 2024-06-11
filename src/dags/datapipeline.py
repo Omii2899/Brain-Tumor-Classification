@@ -9,6 +9,7 @@ from scripts.preprocessing import preprocessing_for_testing_inference, preproces
 from scripts.statistics import capture_histograms
 
 
+
 def check_source():
      """
      Checks if the given GCS object (prefix) is a directory.
@@ -51,18 +52,17 @@ def download_files(flag):
                     blob.download_to_filename(destination_file_name)
           logger.info("Method Finished - Files Downloaded")
 
-
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
 
 # Invoking the global logger method
-logger = setup_logging()
-logger.info("Started DAG pipeline: datapipeline")
+
+
 
 default_args = {
      "owner": "aadarsh",
-     "retries" : 1,
-     "start_date": datetime(2023, 6, 6)
+     "retries" : 0,
+     "start_date": datetime(2023, 12, 31)
      }
 
 dag = DAG("data_pipeline",
@@ -107,6 +107,11 @@ transform_testing_data = PythonOperator(
 )
 
 
-check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
+#check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
+
+check_source >> download_data >> capture_statistics
+capture_statistics >> [augment_transform_training_data, transform_testing_data]
+
+
 
 
