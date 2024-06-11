@@ -111,7 +111,7 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 ├── requirements.txt
 ```
 
-#### Source code files
+#### Source code files:
 
 <ol>
     <li><strong>Data Version Control (DVC)</strong>
@@ -187,8 +187,8 @@ docker run -it --rm -p 8000:8000 image-name:tag-name
 
 The application should now be running and accessible at <code> http://localhost:8000 </code>.
 
-Note: 
-If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code> sudo</code>.
+<i>Note: 
+If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code>sudo</code></i>.
 
 4. Trigger the airflow UI
 ```
