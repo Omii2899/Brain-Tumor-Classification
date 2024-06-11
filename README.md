@@ -76,9 +76,13 @@ Pull the data from the remote source using DVC:
 
 ```
 dvc pull
-```
+``` 
 
-### Description of Files and Folders
+### 5. Add the Key File:
+You need to add the key file in src/keys folder. For security purposes, we have not included this file. To obtain this file, please contact [Aadarsh](mailto:siddha.a@northeastern.edu)  
+
+
+## Description of Files and Folders
 #### Project Structure:
 ```
 ├── .dvc
@@ -164,7 +168,7 @@ dvc pull
 </ol>
 
 
-### Running the data pipeline
+## Running the data pipeline
 To run the pipeline, you can use Docker for containerization.
 
 1. Build the Docker Image
@@ -182,6 +186,9 @@ docker run -it --rm -p 8000:8000 image-name:tag-name
 ```
 
 The application should now be running and accessible at <code> http://localhost:8000 </code>.
+
+Note: 
+If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code> sudo</code>.
 
 4. Trigger the airflow UI
 ```
