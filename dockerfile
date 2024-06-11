@@ -47,6 +47,14 @@ USER airflow
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json
 ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+ENV AIRFLOW__SMTP__SMTP_HOST = smtp.gmail.com
+ENV AIRFLOW__SMTP__SMTP_STARTTLS=True
+ENV AIRFLOW__SMTP__SMTP_SSL=False
+ENV AIRFLOW__SMTP__SMTP_USER = mlopsprojectnunofyourbusiness@gmail.com
+ENV AIRFLOW__SMTP__SMTP_PASSWORD = irymemafgvubvoqf
+ENV AIRFLOW__SMTP__SMTP_PORT=587
+ENV AIRFLOW__SMTP__SMTP_MAIL_FROM = mlopsprojectnunofyourbusiness@gmail.com
+
 EXPOSE 8080
 EXPOSE 8888
 
