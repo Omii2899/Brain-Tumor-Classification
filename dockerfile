@@ -13,6 +13,8 @@ RUN apt-get update -yqq && \
     curl \
     git \
     gcc \
+    libhdf5-dev \   
+    libleveldb-dev \ 
     && apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*

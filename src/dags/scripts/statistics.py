@@ -5,10 +5,10 @@ import glob
 from scripts.logger import setup_logging
 
 # Method to capture statistics of each image in each class
-def capture_histograms(logger):
+def capture_histograms():
 
     # Invoking the global logger method
-    #logger = setup_logging()
+    logger = setup_logging()
     logger.info("Started method: capture_histograms")
 
     # Info about base directory to access images and there respective classes
@@ -51,10 +51,10 @@ def capture_histograms(logger):
     return True
 
 
-def validate_image(image, logger):
+def validate_image(image):
 
     # Invoking the global logger method
-    #logger = setup_logging()
+    logger = setup_logging()
     logger.info("Started method: validate_image")
 
     # Path to saved histograms
@@ -81,6 +81,7 @@ def validate_image(image, logger):
 
     logger.info("Finished method: validate_image")   
     return False
+
 
 
 

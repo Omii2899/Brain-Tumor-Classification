@@ -1,7 +1,8 @@
 apache-airflow==2.0.2
 dvc
 requests
-apache-airflow-providers-google
+# apache-airflow-providers-google
+google-cloud-storage
 notebook
 tensorflow
 opencv-python-headless

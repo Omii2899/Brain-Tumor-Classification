@@ -9,7 +9,7 @@ from scripts.preprocessing import preprocessing_for_testing_inference, preproces
 from scripts.statistics import capture_histograms
 
 
-def check_source(logger):
+def check_source():
      """
      Checks if the given GCS object (prefix) is a directory.
      
@@ -18,7 +18,7 @@ def check_source(logger):
      :return: True if the prefix is a directory, False otherwise.
      """
      bucket_name = "data-source-brain-tumor-classification"
-     #logger = setup_logging()
+     logger = setup_logging()
      logger.info("Started Method: Check_Source")
      client = storage.Client()
      bucket = client.bucket(bucket_name)
@@ -31,8 +31,8 @@ def check_source(logger):
      logger.warning("Finished Method - Source Not Found")
      return False
 
-def download_files(logger, flag):
-     #logger = setup_logging()
+def download_files(flag):
+     logger = setup_logging()
      logger.info("Method Started: Download_Files ")
      if flag :
           bucket_name = "data-source-brain-tumor-classification"
@@ -50,6 +50,8 @@ def download_files(logger, flag):
                     # print(f"{blob.name} - {destination_file_name}")
                     blob.download_to_filename(destination_file_name)
           logger.info("Method Finished - Files Downloaded")
+
+
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
 
@@ -59,7 +61,7 @@ logger.info("Started DAG pipeline: datapipeline")
 
 default_args = {
      "owner": "aadarsh",
-     "retries" : 5,
+     "retries" : 1,
      "start_date": datetime(2023, 6, 6)
      }
 
@@ -70,14 +72,14 @@ dag = DAG("data_pipeline",
 check_source = PythonOperator(
     task_id = "check_source",
     python_callable = check_source,
-    op_args = [logger],
+    #op_args = [logger],
     dag = dag,
 )
 
 download_data = PythonOperator(
      task_id = 'download_data',
      python_callable = download_files,
-     op_args = [logger, check_source.output],
+     op_args = [check_source.output],
      dag = dag,
 )
 
@@ -85,25 +87,24 @@ download_data = PythonOperator(
 capture_statistics = PythonOperator(
      task_id = 'capture_statistics',
      python_callable = capture_histograms,
-     op_args = [logger],
+     #op_args = [logger],
      dag = dag
 )
 
 augment_transform_training_data = PythonOperator(
      task_id = 'augment_input_data',
      python_callable = preprocessing_for_training,
-     op_args = [logger],
+     #op_args = [logger],
      dag = dag
 )
 
 transform_testing_data = PythonOperator(
      task_id = 'transform_testing_data',
      python_callable = preprocessing_for_testing_inference,
-     op_args = [logger, './data/Testing', 32], # path,batch size
+     op_args = ['./data/Testing', 32], # path,batch size
      dag = dag
      
 )
-
 
 
 check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
