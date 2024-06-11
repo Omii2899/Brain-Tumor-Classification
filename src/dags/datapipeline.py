@@ -103,6 +103,7 @@ transform_testing_data = PythonOperator(
      python_callable = preprocessing_for_testing_inference,
      op_args = ['./data/Testing', 32], # path,batch size
      dag = dag
+     
 )
 
 
