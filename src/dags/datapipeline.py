@@ -8,7 +8,6 @@ from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
 from scripts.preprocessing import preprocessing_for_testing_inference, preprocessing_for_training
 from scripts.statistics import capture_histograms
-from airflow.operators.email_operator import EmailOperator
 
 
 
@@ -57,26 +56,9 @@ def download_files(flag):
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
 
-# Define function to notify failure or sucess via an email
-def notify_success(context):
-    success_email = EmailOperator(
-        task_id='success_email',
-        to='ranganth.p@northeastern.edu',
-        subject='Success Notification from Airflow',
-        html_content='<p>The dag tasks succeeded.</p>',
-        dag=context['dag']
-    )
-    success_email.execute(context=context)
+# Invoking the global logger method
 
-def notify_failure(context):
-    failure_email = EmailOperator(
-        task_id='failure_email',
-        to='ranganth.p@northeastern.edu',
-        subject='Failure Notification from Airflow',
-        html_content='<p>The dag tasks failed.</p>',
-        dag=context['dag']
-    )
-    failure_email.execute(context=context)
+
 
 default_args = {
      "owner": "aadarsh",
@@ -155,24 +137,10 @@ transform_testing_data = PythonOperator(
      python_callable = preprocessing_for_testing_inference,
      op_args = ['./data/Testing', 32], # path,batch size
      dag = dag
-     
 )
 
-send_email = EmailOperator(
-    task_id='send_email',
-    to='ranganth.p@northeastern.edu',    # Email address of the recipient
-    subject='Notification from Airflow',
-    html_content='<p>This is a notification email sent from Airflow indicating that the dag was triggered</p>',
-    dag=dag,
-    on_failure_callback=notify_failure,
-    on_success_callback=notify_success
-)
 
 #check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
 
 check_source >> download_data >> capture_statistics
 capture_statistics >> [augment_transform_training_data, transform_testing_data] >> send_email
-
-
-
-
