@@ -6,3 +6,4 @@ google-cloud-storage
 notebook
 tensorflow
 opencv-python-headless
+dvc[gs]
