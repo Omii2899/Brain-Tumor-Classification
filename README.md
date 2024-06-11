@@ -187,6 +187,10 @@ docker run -it --rm -p 8080:8080 image-name:tag-name
 
 The application should now be running and accessible at <code> http://localhost:8080 </code>.
 
+Use the below credentials-
+<code> User: mlopsproject</code>
+<code> Password: admin</code>
+
 <i>Note: 
 If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code>sudo</code></i>.
 
@@ -194,6 +198,10 @@ If the commands fail to execute, ensure that virtualization is enabled in your B
 ```
 python src/dags/datapipeline.py
 ```
+
+### DAG:
+![picture alt](images/datapipeline.png)
+![picture alt](images/daggraph.png)
 
 ## Contributors
 
