@@ -3,16 +3,12 @@ from datetime import datetime
 
 def setup_logging():
     
-    
-    logger = logging.getLogger("unique")
-    
     # Set level to INFO to capture both info and error messages
-    logger.setLevel(logging.INFO) 
-    
-    
+    logger = logging.getLogger("unique")
+
     # Get the current date and time
     #now = datetime.now()
-
+    #logger.setLevel(logging.INFO) 
     # Format the datetime object to a string
     #timestamp_str = now.strftime("%Y_%m_%d_%H_%M_%S")
 
