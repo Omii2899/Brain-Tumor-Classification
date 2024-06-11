@@ -182,10 +182,10 @@ docker images
 
 3. Run the built image
 ```
-docker run -it --rm -p 8000:8000 image-name:tag-name
+docker run -it --rm -p 8080:8080 image-name:tag-name
 ```
 
-The application should now be running and accessible at <code> http://localhost:8000 </code>.
+The application should now be running and accessible at <code> http://localhost:8080 </code>.
 
 <i>Note: 
 If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code>sudo</code></i>.
