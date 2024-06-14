@@ -6,59 +6,11 @@ from airflow import configuration as conf
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
-from scripts.preprocessing import preprocessing_for_testing_inference, preprocessing_for_training
-from scripts.statistics import capture_histograms
-
-
-
-def check_source():
-     """
-     Checks if the given GCS object (prefix) is a directory.
-     
-     :param bucket_name: Name of the GCS bucket.
-     :param prefix: Prefix to check.
-     :return: True if the prefix is a directory, False otherwise.
-     """
-     bucket_name = "data-source-brain-tumor-classification"
-     logger = setup_logging()
-     logger.info("Started Method: Check_Source")
-     client = storage.Client()
-     bucket = client.bucket(bucket_name)
-
-     blobs = list(bucket.list_blobs())
-
-     if len(blobs)>3:
-          logger.info("Finished Method - Source Found")
-          return True
-     logger.warning("Finished Method - Source Not Found")
-     return False
-
-def download_files(flag):
-     logger = setup_logging()
-     logger.info("Method Started: Download_Files ")
-     if flag :
-          bucket_name = "data-source-brain-tumor-classification"
-          destination_folder = ''
-          storage_client = storage.Client()
-          bucket = storage_client.get_bucket(bucket_name)
-          blobs = bucket.list_blobs()
-          for blob in blobs:
-               if blob.name.endswith('/'):
-                    continue
-               else:
-                    destination_file_name = os.path.join(destination_folder, blob.name)
-
-                    os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)
-                    # print(f"{blob.name} - {destination_file_name}")
-                    blob.download_to_filename(destination_file_name)
-          logger.info("Method Finished - Files Downloaded")
+from scripts.preprocessing import preprocessing_for_testing_inference, preprocessing_for_training, check_source, download_files
+from dags.scripts.statistics_histogram import capture_histograms
 
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
-
-# Invoking the global logger method
-
-
 
 default_args = {
      "owner": "aadarsh",
@@ -101,7 +53,6 @@ send_email = EmailOperator(
     on_failure_callback=notify_failure,
     on_success_callback=notify_success
 )
-
 
 check_source = PythonOperator(
     task_id = "check_source",
