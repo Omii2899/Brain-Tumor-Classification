@@ -54,35 +54,54 @@ def preprocessing_for_testing_inference(batchSize):
     )
     return test_generator
 
+import mlflow
+import mlflow.keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+import keras_tuner as kt
+
 def build_model(hp):
-    model = Sequential()
-    for i in range(1, 3):
-        model.add(Conv2D(
-            filters=hp.Int(f'conv_{i}_filters', min_value=32, max_value=256, step=32),
-            kernel_size=(3, 3),
-            activation='relu',
-            padding='same',
-            input_shape=(224, 224, 3) if i == 1 else None
-        ))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Flatten())
-    for i in range(hp.Int('num_dense_layers', 1, 3)):
-        model.add(Dense(
-            units=hp.Int(f'dense_{i}_units', min_value=128, max_value=512, step=128),
-            activation='relu'
-        ))
-        if hp.Boolean(f'dropout_{i}'):
-            model.add(Dropout(rate=hp.Float(f'dropout_{i}_rate', min_value=0.2, max_value=0.5, step=0.1)))
-    model.add(Dense(4, activation='softmax'))
-    model.compile(
-        optimizer=Adam(learning_rate=hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='LOG')),
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
-    )
-    return model
+    with mlflow.start_run(nested=True): 
+        model = Sequential()
+        for i in range(1, 3):
+            filters = hp.Int(f'conv_{i}_filters', min_value=32, max_value=256, step=32)
+            model.add(Conv2D(
+                filters=filters,
+                kernel_size=(3, 3),
+                activation='relu',
+                padding='same',
+                input_shape=(224, 224, 3) if i == 1 else None
+            ))
+            mlflow.log_param(f'conv_{i}_filters', filters)
+            model.add(MaxPooling2D(pool_size=(2, 2)))
+        
+        model.add(Flatten())
+        
+        num_dense_layers = hp.Int('num_dense_layers', 1, 3)
+        mlflow.log_param('num_dense_layers', num_dense_layers)
+        
+        for i in range(num_dense_layers):
+            units = hp.Int(f'dense_{i}_units', min_value=128, max_value=512, step=128)
+            model.add(Dense(units=units, activation='relu'))
+            mlflow.log_param(f'dense_{i}_units', units)
+            if hp.Boolean(f'dropout_{i}'):
+                dropout_rate = hp.Float(f'dropout_{i}_rate', min_value=0.2, max_value=0.5, step=0.1)
+                model.add(Dropout(rate=dropout_rate))
+                mlflow.log_param(f'dropout_{i}_rate', dropout_rate)
+        
+        model.add(Dense(4, activation='softmax'))
+        
+        learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='LOG')
+        model.compile(
+            optimizer=Adam(learning_rate=learning_rate),
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        mlflow.log_param('learning_rate', learning_rate)
+        
+        return model
 
-
-# Initialize the tuner
 tuner = kt.Hyperband(
     build_model,
     objective='val_accuracy',
@@ -92,8 +111,8 @@ tuner = kt.Hyperband(
     project_name='brain_tumor_classification'
 )
 
-# Search for the best hyperparameters
-tuner.search(preprocessing_for_training(), epochs=50, validation_data=preprocessing_for_testing_inference(32))
+with mlflow.start_run(): 
+    tuner.search(preprocessing_for_training(), epochs=50, validation_data=preprocessing_for_testing_inference(32))
 
 # Get the optimal hyperparameters
 best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
