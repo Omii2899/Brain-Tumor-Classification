@@ -162,3 +162,8 @@ cython_debug/
 tensile-topic-424308-d9-7418db5a1c90.json
 
 .dvc/config
+/src/notebooks/.ipynb_checkpoints
+.DS_Store
+.idea/
+mlruns/
+model_runs/
