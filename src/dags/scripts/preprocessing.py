@@ -1,5 +1,5 @@
-import tensorflow
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
+# from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from scripts.logger import setup_logging 
 
 def preprocessing_for_training():
@@ -11,7 +11,7 @@ def preprocessing_for_training():
     path = './data/Training/'
     logger.info(f"Image path: {path}")
     
-    train_datagen = ImageDataGenerator(
+    train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
         rescale=1.0/255,           # Normalize pixel values to [0, 1]
         rotation_range=10,         # Rotate images up to 10 degrees
         width_shift_range=0.1,     # Shift images horizontally by up to 10% of width
@@ -43,7 +43,7 @@ def preprocessing_for_testing_inference(path, batchSize):
     logger.info(f'Batch size: {batchSize}')
 
     # Normalize pixel values to [0, 1]
-    test_val_datagen = ImageDataGenerator(rescale=1.0/255)
+    test_val_datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255)
 
     test_generator = test_val_datagen.flow_from_directory(
     path,
