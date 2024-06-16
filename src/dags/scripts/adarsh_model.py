@@ -11,7 +11,8 @@ from tensorflow.python.keras import layers, models
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './src/keys/tensile-topic-424308-d9-7418db5a1c90'
 
-keyfile_path = '../../keys/akshita_keyfile.json'  #change as per your keyfile path
+keyfile_path = './src/keys/akshita_keyfile.json'  #change as per your keyfile path
+print(keyfile_path)
 
 # Checking if file exists
 if not os.path.exists(keyfile_path):
@@ -72,17 +73,17 @@ def preprocessing_for_testing_inference(batchSize):
     return test_generator
 
 
-model = models.Sequential([
-    layers.InputLayer(shape=(224, 224, 3)),
-    layers.Conv2D(32, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(128, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(4, activation='sigmoid')
+model = tf.keras.preprocessing.models.Sequential([
+    tf.keras.preprocessing.layers .InputLayer(shape=(224, 224, 3)),
+    tf.keras.preprocessing.layers .Conv2D(32, (3, 3), activation='relu'),
+    tf.keras.preprocessing.layers .MaxPooling2D((2, 2)),
+    tf.keras.preprocessing.layers .Conv2D(64, (3, 3), activation='relu'),
+    tf.keras.preprocessing.layers .MaxPooling2D((2, 2)),
+    tf.keras.preprocessing.layers .Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.preprocessing.layers .MaxPooling2D((2, 2)),
+    tf.keras.preprocessing.layers .Flatten(),
+    tf.keras.preprocessing.layers .Dense(128, activation='relu'),
+    tf.keras.preprocessing.layers .Dense(4, activation='sigmoid')
 ])
 model.summary()
 
