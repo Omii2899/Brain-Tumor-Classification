@@ -2,7 +2,7 @@ FROM python:3.8
 LABEL maintainer="Aadarsh"
 
 ARG AIRFLOW_VERSION=2.0.2
-ARG AIRFLOW_HOME=/opt/airflow
+ARG AIRFLOW_HOME=/mnt/airflow
 
 WORKDIR ${AIRFLOW_HOME}
 ENV AIRFLOW_HOME=${AIRFLOW_HOME}
@@ -13,32 +13,36 @@ RUN apt-get update -yqq && \
     curl \
     git \
     gcc \
+    libhdf5-dev \
+    libleveldb-dev \
     && apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements.txt /requirements.txt 
+COPY ./requirements.txt /requirements.txt
 
 # Upgrade pip separately to catch any issues
-RUN pip install --upgrade pip 
-
-# Add airflow user separately to catch any issues
-RUN useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow
-
-# Install Apache Airflow separately to catch any issues
-RUN pip install apache-airflow==${AIRFLOW_VERSION} 
-
-# Install requirements separately to catch any issues
-RUN pip install -r /requirements.txt 
+RUN pip install --upgrade pip && \
+    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && \
+    pip install apache-airflow==${AIRFLOW_VERSION} && \
+    pip install -r /requirements.txt
 
 COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
-RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
-#copy dags folder 
-COPY ./dags ${AIRFLOW_HOME}/dags
 
+# Ensure the entrypoint script is executable
+RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
+
+# Copy the Airflow scripts
+COPY ./src ${AIRFLOW_HOME}/
+
+# Set ownership and permissions
 RUN chown -R airflow: ${AIRFLOW_HOME}
+
 USER airflow
 
-EXPOSE 8080
+ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json
 
-ENTRYPOINT [ "/opt/airflow/entrypoint.sh" ]
+EXPOSE 8080
+EXPOSE 8888
+
+ENTRYPOINT [ "/mnt/airflow/entrypoint.sh" ]
