@@ -7,7 +7,7 @@ import base64
 import io
 
 
-FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
+FASTAPI_BACKEND_ENDPOINT = "http://localhost:8501"
 
 # Make sure you have brain_tumor_model.pkl file in the FastAPI folder
 FASTAPI_BRAIN_TUMOR_MODEL_LOCATION = Path(__file__).resolve().parents[2] / 'FastAPI_Labs' / 'src' / 'brain_tumor_model.pkl'
@@ -37,10 +37,6 @@ def main():
             LOGGER.error("Backend offline 😱")
             st.error("Backend offline 😱")
 
-        st.info("Task Progress")
-        task_progress = ["Image Received", "Preprocessing Image", "Running Model", "Generating Output", "Complete"]
-        for task in task_progress:
-            st.write(f"- {task}")
 
 
     # Dashboard body
@@ -58,10 +54,12 @@ def main():
     This MLOps project aims to classify brain tumors using MRI images. 
     Please upload a brain MRI image to get started.
     """)
+
+
      # Image upload section
     uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg", "jpeg", "png"])
 
-    # Check if client has provided an input image file
+   # Check if client has provided an input image file
     if uploaded_image:
         st.write('Preview Image')
         image = Image.open(uploaded_image)
@@ -69,41 +67,20 @@ def main():
         st.session_state["IS_IMAGE_FILE_AVAILABLE"] = True
     else:
         st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False
-            
+
     # Predict button
     predict_button = st.button('Predict')
 
-    # If predict button is pressed
-    if predict_button:
-        if "IS_IMAGE_FILE_AVAILABLE" in st.session_state and st.session_state["IS_IMAGE_FILE_AVAILABLE"]:
-            if FASTAPI_BRAIN_TUMOR_MODEL_LOCATION.is_file():
-                client_input = uploaded_image
-                try:
-                    result_container = st.empty()
-                    with st.spinner('Predicting...'):
-                        # Prepare the file for upload
-                        files = {"file": client_input.getvalue()}
-                        predict_response = requests.post(f'{FASTAPI_BACKEND_ENDPOINT}/predict', files=files)
+    if predict_button and uploaded_image:
+        # Send the image to the FastAPI server for prediction
+        files = {"file": uploaded_image.getvalue()}
+        response = requests.post(f"{FASTAPI_BACKEND_ENDPOINT}/predict/", files=files)
 
-                    if predict_response.status_code == 200:
-                        prediction = predict_response.json()
-                        if prediction["result"] == "No Tumor":
-                            result_container.success("No Tumor Detected")
-                        else:
-                            result_container.error("Tumor Detected")
-                    else:
-                        st.toast(f':red[Status from server: {predict_response.status_code}. Refresh page and check backend status]', icon="🔴")
-                except Exception as e:
-                    st.toast(':red[Problem with backend. Refresh page and check backend status]', icon="🔴")
-                    LOGGER.error(e)
-            else:
-                LOGGER.warning('brain_tumor_model.pkl not found in FastAPI Lab. Make sure to run train.py to get the model.')
-                st.toast(':red[Model brain_tumor_model.pkl not found. Please run the train.py file in FastAPI Lab]', icon="🔥")
+        if response.status_code == 200:
+            prediction = response.json().get("prediction")
+            st.write(f"Prediction: {prediction}")
         else:
-            LOGGER.error('Provide a valid MRI image file')
-            st.toast(':red[Please upload a valid MRI image file]', icon="🛑")
-
+            st.write("Error: Could not get a prediction.")
 
 if __name__ == "__main__":
     main()
-# st.button("Start Model", on_click=)
