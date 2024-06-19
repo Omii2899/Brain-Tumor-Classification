@@ -1,6 +1,8 @@
 import os
+import io
 import tensorflow as tf
 import numpy as np
+from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from logger import setup_logging 
 from google.cloud import storage
@@ -104,10 +106,19 @@ def download_files(flag):
 
 
 #Method to load and process image as an array
-def load_and_preprocess_image(file_path, img_size=(224, 224, 3)):
-    img = tf.keras.preprocessing.image.load_img(file_path, target_size=img_size)
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
-    img_array = np.expand_dims(img_array, 0)  # Create a batch
-    img_array /= 255.0  # Normalize to [0, 1]
-    return img_array
+def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
+#     #img = Image.open(io.BytesIO(image_data))
+#     resized_img = image_data.resize(img_size)
+#     #img = tf.keras.preprocessing.image.load_img(file_path, target_size=img_size)
+#     img_array = tf.keras.preprocessing.image.img_to_array(resized_img)
+#     img_array = np.expand_dims(img_array, 0)  # Create a batch
+#     img_array /= 255.0  # Normalize to [0, 1]
+
+    image = image_data.resize((224, 224))  # Resize the image
+    image_array = np.array(image)
+    image_array = image_array.astype('float32')  # Convert the image array to float32
+    image_array = image_array * (1.0 / 255)  # Normalize the pixel values
+    image_array = np.expand_dims(image_array, axis=0)  # Expand dimensions to match model input shape
+
+    return image_array
 

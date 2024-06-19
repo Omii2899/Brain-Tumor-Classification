@@ -1,10 +1,11 @@
 import mlflow
-import os
+import io
 import skimage.io
 from mlflow import MlflowClient
-from src.dags.scripts.preprocessing import load_and_preprocess_image
-from src.dags.scripts.explainability import explain_inference
+from preprocessing import load_and_preprocess_image
+from explainability import explain_inference
 import os
+from PIL import Image
 from google.cloud import storage
 
 class Model_Server:
@@ -63,8 +64,11 @@ class Model_Server:
         prediction_class = self._prediction(pred=preds)
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'
 
-        #Upload inference image to logs
-        self.uploadtobucket(img_path, folder_name)
+        # #Upload inference image to logs
+        #image_buffer = io.BytesIO()
+        # img_path.save(image_buffer, format='JPEG')
+        
+        #self.uploadtobucket(img_path, folder_name)
     
         return prediction_class
     
@@ -73,13 +77,13 @@ class Model_Server:
         return (explain_inference(self.img_array, self.loaded_model))
     
 
-    def uploadtobucket(self, img_path, folder_name, bucket_name = "data-source-brain-tumor-classification"):
+    def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = "data-source-brain-tumor-classification"):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         # Use the file name with folder path as the blob name
-        blob_name = os.path.join(folder_name, os.path.basename(img_path))
+        blob_name = os.path.join(folder_name, file_name)
         blob = bucket.blob(blob_name)
-        blob.upload_from_filename(img_path)
+        blob.upload_from_string(file_path)
         return True
     
     def _prediction(self, pred):

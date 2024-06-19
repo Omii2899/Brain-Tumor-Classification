@@ -8,7 +8,7 @@ import sklearn
 import sklearn.metrics
 from sklearn.linear_model import LinearRegression
 from tensorflow.keras.preprocessing import image
-from src.dags.scripts.preprocessing import load_and_preprocess_image
+from preprocessing import load_and_preprocess_image
 import warnings
 
 
