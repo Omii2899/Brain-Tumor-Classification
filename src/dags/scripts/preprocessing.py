@@ -1,6 +1,9 @@
+import os
 import tensorflow as tf
-# from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from scripts.logger import setup_logging 
+import numpy as np
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from logger import setup_logging 
+from google.cloud import storage
 
 def preprocessing_for_training():
 
@@ -32,9 +35,9 @@ def preprocessing_for_training():
     )
 
     logger.info("Finished method: preprocessing_for_training")
-    #return train_generator
+    return train_generator
 
-def preprocessing_for_testing_inference(path, batchSize):
+def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
     # Invoking the global logger method
     logger = setup_logging()
@@ -54,5 +57,57 @@ def preprocessing_for_testing_inference(path, batchSize):
     )
 
     logger.info("Finished method: preprocessing_for_testing_inference")
-    #return test_generator
+    return test_generator
+
+def check_source():
+     """
+     Checks if the given GCS object (prefix) is a directory.
+     
+     :param bucket_name: Name of the GCS bucket.
+     :param prefix: Prefix to check.
+     :return: True if the prefix is a directory, False otherwise.
+     """
+     bucket_name = "data-source-brain-tumor-classification"
+     logger = setup_logging()
+     logger.info("Started Method: Check_Source")
+     client = storage.Client()
+     bucket = client.bucket(bucket_name)
+
+     blobs = list(bucket.list_blobs())
+
+     if len(blobs)>3:
+          logger.info("Finished Method - Source Found")
+          return True
+     logger.warning("Finished Method - Source Not Found")
+     return False
+
+
+def download_files(flag):
+     logger = setup_logging()
+     logger.info("Method Started: Download_Files ")
+     if flag :
+          bucket_name = "data-source-brain-tumor-classification"
+          destination_folder = ''
+          storage_client = storage.Client()
+          bucket = storage_client.get_bucket(bucket_name)
+          blobs = bucket.list_blobs()
+          for blob in blobs:
+               if blob.name.endswith('/'):
+                    continue
+               else:
+                    destination_file_name = os.path.join(destination_folder, blob.name)
+
+                    os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)
+                    # print(f"{blob.name} - {destination_file_name}")
+                    blob.download_to_filename(destination_file_name)
+          logger.info("Method Finished - Files Downloaded")
+
+
+#Method to load and process image as an array
+def load_and_preprocess_image(file_path, img_size=(224, 224, 3)):
+    img = tf.keras.preprocessing.image.load_img(file_path, target_size=img_size)
+    img_array = tf.keras.preprocessing.image.img_to_array(img)
+    img_array = np.expand_dims(img_array, 0)  # Create a batch
+    img_array /= 255.0  # Normalize to [0, 1]
+    return img_array
 
