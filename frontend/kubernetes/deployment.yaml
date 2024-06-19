@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: frontend-deployment
-  tempelate:
+  template:
     metadata:
       labels:
         app: frontend-deployment
