@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: streamlit-frontend
+  name: frontend-deployment
+  labels:
+    app: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-deployment
+  tempelate:
+    metadata:
+      labels:
+        app: frontend-deployment
+    spec:
+      containers:
+        - name: frontend-container
+          image: 
+          imagePullPolicy: always
+          ports:
+            - containerPort: 8501
+          resources:
+            requests:
+              memory: "800Mi"
+              cpu: "1.0"
