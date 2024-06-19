@@ -7,7 +7,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
 from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training, check_source, download_files
-from dags.scripts.statistics_histogram import capture_histograms
+from scripts.statistics_histogram import capture_histograms
 from scripts.model_trainer import build_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 

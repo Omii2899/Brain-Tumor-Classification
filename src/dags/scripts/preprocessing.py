@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from logger import setup_logging 
+from scripts.logger import setup_logging 
 from google.cloud import storage
 
 def preprocessing_for_training():

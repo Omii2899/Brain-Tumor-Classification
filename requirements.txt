@@ -7,3 +7,6 @@ notebook
 tensorflow
 opencv-python-headless
 dvc[gs]
+mlflow
+protobuf==3.19
+numpy==1.19.5
