@@ -3,6 +3,7 @@ import requests
 from pathlib import Path
 from streamlit.logger import get_logger
 from PIL import Image
+import io
 
 FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
 
@@ -39,7 +40,7 @@ def main():
     """)
 
     # Image upload section
-    uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg", "jpeg", "png"])
+    uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg", "jpeg"])
 
     # Check if client has provided an input image file
     if uploaded_image:
@@ -53,9 +54,25 @@ def main():
     # Predict button
     predict_button = st.button('Predict')
 
+    # if predict_button and uploaded_image:
+    #     # Send the image to the FastAPI server for prediction
+    #     files = {"file": uploaded_image.getvalue()}
+    #     #response = requests.post(f"{FASTAPI_BACKEND_ENDPOINT}/predict/", files=files)
+    #     response = requests.post(f"{FASTAPI_BACKEND_ENDPOINT}/predict/", files=files)
+
+    #     if response.status_code == 200:
+    #         prediction = response.json().get("prediction")
+    #         st.write(f"Prediction: {prediction}")
+    #     else:
+    #         st.write("Error: Could not get a prediction.")
     if predict_button and uploaded_image:
+        # Convert image to JPEG format in memory
+        image_buffer = io.BytesIO()
+        image.save(image_buffer, format='JPEG')
+        image_buffer.seek(0)
+
         # Send the image to the FastAPI server for prediction
-        files = {"file": uploaded_image.getvalue()}
+        files = {"file": ("image.jpg", image_buffer, "image/jpeg")}
         response = requests.post(f"{FASTAPI_BACKEND_ENDPOINT}/predict/", files=files)
 
         if response.status_code == 200:
@@ -63,6 +80,5 @@ def main():
             st.write(f"Prediction: {prediction}")
         else:
             st.write("Error: Could not get a prediction.")
-
 if __name__ == "__main__":
     main()

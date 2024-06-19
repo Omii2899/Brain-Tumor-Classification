@@ -7,7 +7,8 @@ from PIL import Image
 import os
 
 
-keyfile_path = './src/keys/akshita_keyfile.json'  #change as per your keyfile path
+keyfile_path = 'src/keys/tensile-topic-424308-d9-7418db5a1c90.json'  #change as per your keyfile path
+
 print(keyfile_path)
 
 # Checking if file exists
@@ -25,6 +26,7 @@ image = Image.open(test_image_path)
 # Preprocess the image
 image = image.resize((224, 224))  # Corrected resize tuple
 image_array = np.array(image)
+image_array = image_array.astype('float32')
 image_array = image_array * (1.0/255)
 image_array = np.expand_dims(image_array, axis=0)  # Expand dimensions to match model input shape
 
