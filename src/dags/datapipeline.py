@@ -6,8 +6,10 @@ from airflow import configuration as conf
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
-from scripts.preprocessing import preprocessing_for_testing_inference, preprocessing_for_training, check_source, download_files
+from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training, check_source, download_files
 from dags.scripts.statistics_histogram import capture_histograms
+from scripts.model_trainer import build_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
@@ -85,13 +87,19 @@ augment_transform_training_data = PythonOperator(
 
 transform_testing_data = PythonOperator(
      task_id = 'transform_testing_data',
-     python_callable = preprocessing_for_testing_inference,
+     python_callable = preprocessing_for_testing,
      op_args = ['./data/Testing', 32], # path,batch size
      dag = dag
 )
 
+train_model = PythonOperator(
+     task_id = 'builiding_model',
+     python_callable = build_model,
+     op_args = [augment_transform_training_data.output, transform_testing_data.output], 
+     dag = dag
+)
 
 #check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
 
 check_source >> download_data >> capture_statistics
-capture_statistics >> [augment_transform_training_data, transform_testing_data] >> send_email
+capture_statistics >> [augment_transform_training_data, transform_testing_data] >> train_model >>send_email

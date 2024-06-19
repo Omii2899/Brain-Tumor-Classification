@@ -1,136 +1,108 @@
+import mlflow.types
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Flatten
 from tensorflow.keras.optimizers import Adam
 import keras_tuner as kt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-#Enable TensorFlow with Metal on macOS
-physical_devices = tf.config.list_physical_devices('GPU')
-if physical_devices:
-    try:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
-        print("TensorFlow with Metal enabled.")
-    except RuntimeError as e:
-        print(e)
-
-# Configure TensorFlow to use all available CPU cores
-num_cores = len(tf.config.experimental.list_physical_devices('CPU'))
-print(num_cores)
-tf.config.threading.set_inter_op_parallelism_threads(num_cores)
-tf.config.threading.set_intra_op_parallelism_threads(num_cores)
-
-def preprocessing_for_training():
-    path = './data/Training/'
-    train_datagen = ImageDataGenerator(
-        rescale=1.0/255,
-        rotation_range=10,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
-        shear_range=0.1,
-        zoom_range=0.1,
-        horizontal_flip=True,
-        fill_mode='nearest'
-    )
-    train_generator = train_datagen.flow_from_directory(
-        path,
-        target_size=(224, 224),
-        batch_size=32,
-        class_mode='categorical',
-        shuffle=True,
-        seed=42
-    )
-    return train_generator
-
-def preprocessing_for_testing_inference(batchSize):
-    path = './data/Testing/'
-    test_val_datagen = ImageDataGenerator(rescale=1.0/255)
-    test_generator = test_val_datagen.flow_from_directory(
-        path,
-        target_size=(224, 224),
-        batch_size=batchSize,
-        class_mode='categorical',
-        shuffle=False
-    )
-    return test_generator
-
+import mlflow.types.schema as schema
+from mlflow.types.schema import Schema, ColSpec
+import os
 import mlflow
-import mlflow.keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
-from tensorflow.keras.optimizers import Adam
-import keras_tuner as kt
+import numpy as np
+from preprocessing import preprocessing_for_training, preprocessing_for_testing_inference
 
-def build_model(hp):
-    with mlflow.start_run(nested=True): 
-        model = Sequential()
-        for i in range(1, 3):
-            filters = hp.Int(f'conv_{i}_filters', min_value=32, max_value=256, step=32)
-            model.add(Conv2D(
-                filters=filters,
-                kernel_size=(3, 3),
-                activation='relu',
-                padding='same',
-                input_shape=(224, 224, 3) if i == 1 else None
-            ))
-            mlflow.log_param(f'conv_{i}_filters', filters)
-            model.add(MaxPooling2D(pool_size=(2, 2)))
+def build_model(train_generator, validation_generator):
+
+    # Ml Flow running on GCP Pre Check
+
+    keyfile_path = '/home/p10/Documents/tensile-topic-424308-d9-17a256b9b21c.json'  # change as per your keyfile path
+
+    # Checking if file exists
+    if not os.path.exists(keyfile_path):
+        raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
+    else:
+        print(f'Path found : {keyfile_path}')
+
+    # Set the environment variable to point to the service account key file
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
+    os.environ['MLFLOW_GCS_BUCKET'] = 'ml-flow-remote-tracker-bucket'
+
+    mlflow.set_tracking_uri("http://35.231.231.140:5000/")
+    mlflow.set_experiment("Brain-Tumor-Classification")
+
+    num_classes = 4
+    img_shape = (224, 224, 3)
+
+    with mlflow.start_run():
         
-        model.add(Flatten())
+        # Create the model
+        model = Sequential([
+            Conv2D(64, (3, 3), activation="relu", padding="same", input_shape=img_shape),
+            MaxPooling2D(pool_size=(2, 2)),
+
+            Conv2D(64, (3, 3), activation="relu", padding="same"),
+            MaxPooling2D(pool_size=(2, 2)),
+
+            Conv2D(128, (3, 3), activation="relu", padding="same"),
+            MaxPooling2D(pool_size=(2, 2)),
+
+            Conv2D(128, (3, 3), activation="relu", padding="same"),
+            MaxPooling2D(pool_size=(2, 2)),
+            Flatten(),
+
+            Dense(512, activation="relu"),
+            Dense(num_classes, activation="softmax")
+        ])
+
+        # Log the model summary
+        model.summary(print_fn=lambda x: mlflow.log_text(x, "model_summary.txt"))
+
+        # Log the model configuration
+        mlflow.log_param("model_type", "Sequential")
+        mlflow.log_param("num_classes", num_classes)
+        mlflow.log_param("img_shape", img_shape)
+
+        optimizer = Adam(learning_rate=0.001, beta_1=0.85, beta_2=0.9925)
+        model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy', 'recall'])
+
+        # Log the optimizer configuration
+        mlflow.log_param("optimizer", "Adam")
+        mlflow.log_param("learning_rate", 0.001)\
         
-        num_dense_layers = hp.Int('num_dense_layers', 1, 3)
-        mlflow.log_param('num_dense_layers', num_dense_layers)
-        
-        for i in range(num_dense_layers):
-            units = hp.Int(f'dense_{i}_units', min_value=128, max_value=512, step=128)
-            model.add(Dense(units=units, activation='relu'))
-            mlflow.log_param(f'dense_{i}_units', units)
-            if hp.Boolean(f'dropout_{i}'):
-                dropout_rate = hp.Float(f'dropout_{i}_rate', min_value=0.2, max_value=0.5, step=0.1)
-                model.add(Dropout(rate=dropout_rate))
-                mlflow.log_param(f'dropout_{i}_rate', dropout_rate)
-        
-        model.add(Dense(4, activation='softmax'))
-        
-        learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='LOG')
-        model.compile(
-            optimizer=Adam(learning_rate=learning_rate),
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
+        mlflow.log_param("beta_1", 0.85)
+        mlflow.log_param("beta_2", 0.9925)
+
+        # Prepare data generators
+        #train_generator = preprocessing_for_training()
+        #validation_generator = preprocessing_for_testing_inference(batchSize = 32)
+
+        # Log the number of training and validation samples
+        mlflow.log_param("num_train_samples", train_generator.samples)
+        mlflow.log_param("num_val_samples", validation_generator.samples)
+
+        # Train the model
+        history = model.fit(train_generator, epochs=1, validation_data=validation_generator)
+
+        #input_example = tf.random.uniform(shape=(1, *img_shape)).numpy()
+        #output_example = model.predict(input_example) 
+        #signature =  mlflow.models.signature.infer_signature(input_example, output_example)
+
+        mlflow.keras.log_model(
+            model,
+            artifact_path="Brain_Tumor_Classification_Model",
+            #input_example=input_example.numpy().tolist()
+            #signature=signature
         )
-        mlflow.log_param('learning_rate', learning_rate)
-        
-        return model
 
-tuner = kt.Hyperband(
-    build_model,
-    objective='val_accuracy',
-    max_epochs=10,
-    factor=3,
-    directory='./model_runs/',
-    project_name='brain_tumor_classification'
-)
+        # Log the training metrics
+        for epoch in range(1):
+            mlflow.log_metric("train_accuracy", history.history['accuracy'][epoch], step=epoch)
+            mlflow.log_metric("train_recall", history.history['recall'][epoch], step=epoch)
+            mlflow.log_metric("val_accuracy", history.history['val_accuracy'][epoch], step=epoch)
+            mlflow.log_metric("val_recall", history.history['val_recall'][epoch], step=epoch)
 
-with mlflow.start_run(): 
-    tuner.search(preprocessing_for_training(), epochs=50, validation_data=preprocessing_for_testing_inference(32))
 
-# Get the optimal hyperparameters
-best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+    return model
 
-print(f"""
-The optimal hyperparameters are as follows:
-Number of filters in each convolutional layer:
-    Conv_1_filters: {best_hps.get('conv_1_filters')}
-    Conv_2_filters: {best_hps.get('conv_2_filters')}
-    Conv_3_filters: {best_hps.get('conv_3_filters')}
-    Conv_4_filters: {best_hps.get('conv_4_filters')}
-Number of dense layers: {best_hps.get('num_dense_layers')}
-""")
-for i in range(best_hps.get('num_dense_layers')):
-    print(f"Dense_{i}_units: {best_hps.get(f'dense_{i}_units')}")
-    print(f"Dropout_{i}_rate: {best_hps.get(f'dropout_{i}_rate')}")
-print(f"Learning rate: {best_hps.get('learning_rate')}")
 
-# Build the model with the optimal hyperparameters and train it
-# model = tuner.hypermodel.build(best_hps)
-# history = model.fit(preprocessing_for_training(), epochs=50, validation_data=preprocessing_for_testing_inference())

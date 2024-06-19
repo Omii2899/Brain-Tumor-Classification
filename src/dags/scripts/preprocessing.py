@@ -1,7 +1,8 @@
 import os
-import tensorflow
+import tensorflow as tf
+import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from scripts.logger import setup_logging 
+from logger import setup_logging 
 from google.cloud import storage
 
 def preprocessing_for_training():
@@ -34,9 +35,9 @@ def preprocessing_for_training():
     )
 
     logger.info("Finished method: preprocessing_for_training")
-    #return train_generator
+    return train_generator
 
-def preprocessing_for_testing_inference(path, batchSize):
+def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
     # Invoking the global logger method
     logger = setup_logging()
@@ -56,7 +57,7 @@ def preprocessing_for_testing_inference(path, batchSize):
     )
 
     logger.info("Finished method: preprocessing_for_testing_inference")
-    #return test_generator
+    return test_generator
 
 def check_source():
      """
@@ -100,4 +101,13 @@ def download_files(flag):
                     # print(f"{blob.name} - {destination_file_name}")
                     blob.download_to_filename(destination_file_name)
           logger.info("Method Finished - Files Downloaded")
+
+
+#Method to load and process image as an array
+def load_and_preprocess_image(file_path, img_size=(224, 224, 3)):
+    img = tf.keras.preprocessing.image.load_img(file_path, target_size=img_size)
+    img_array = tf.keras.preprocessing.image.img_to_array(img)
+    img_array = np.expand_dims(img_array, 0)  # Create a batch
+    img_array /= 255.0  # Normalize to [0, 1]
+    return img_array
 
