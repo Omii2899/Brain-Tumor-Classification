@@ -2,7 +2,7 @@ import cv2
 import pickle
 import os
 import glob
-from scripts.logger import setup_logging
+from logger import setup_logging
 
 # Method to capture statistics of each image in each class
 def capture_histograms():
@@ -12,7 +12,7 @@ def capture_histograms():
     logger.info("Started method: capture_histograms")
 
     # Info about base directory to access images and there respective classes
-    base_dir = './data/Training/'
+    base_dir = '../../../data/Training/'
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
     
     histograms = []
@@ -82,7 +82,7 @@ def validate_image(image):
     logger.info("Finished method: validate_image")   
     return False
 
-
+capture_histograms()
 
 
 

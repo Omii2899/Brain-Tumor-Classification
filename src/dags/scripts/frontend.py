@@ -6,6 +6,7 @@ from PIL import Image
 import io
 import base64
 
+
 FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
 
 # Streamlit logger
@@ -82,8 +83,21 @@ def main():
             with col2:
                 st.image(boundaries_image, caption='Marked Boundaries', use_column_width=False, width=300)
 
+        elif response.status_code == 400:
+            result = response.json()
+            st.error(result['error'])
+            # st.write('Preview Image')
+            # st.image(image, caption='Uploaded Image', use_column_width=False, width=300)
+            retry_button = st.button('Retry')
+            if retry_button:
+                st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False  # Reset image availability flag
+                st.experimental_rerun()  # Rerun the app to allow re-uploading
+            #retry_button = st.button('Retry')
+            
         else:
             st.write("Error: Could not get a prediction.")
 
+    if not uploaded_image or (uploaded_image and not st.session_state["IS_IMAGE_FILE_AVAILABLE"]):
+        st.info("Please upload an image to proceed.")
 if __name__ == "__main__":
     main()

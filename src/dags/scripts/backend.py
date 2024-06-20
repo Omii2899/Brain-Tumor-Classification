@@ -9,11 +9,13 @@ import io
 import base64
 import numpy as np
 from Model_Serve import Model_Server
-
+from statistics_histogram import validate_image
+from statistics_histogram import capture_histograms
 
 app = FastAPI()
 
 ms = Model_Server(stage='Staging')
+ch = capture_histograms()
 
 @app.get("/")
 def read_root():
@@ -26,6 +28,13 @@ async def predict(file: UploadFile = File(...)):
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
 
+    # Validate the image
+    image_path = "/tmp/temp_image.jpg"
+    image.save(image_path, format="JPEG")
+    is_valid = validate_image(image_path)
+    if not is_valid:
+        return JSONResponse(content={"error": "Invalid image. Please upload a correct brain MRI image."}, status_code=400)
+    
     # Get existing filenames in the cloud
     existing_filenames = ms.get_existing_filenames()
 

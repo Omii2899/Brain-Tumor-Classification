@@ -11,7 +11,7 @@ def setup_logging():
     #logger.setLevel(logging.INFO) 
     # Format the datetime object to a string
     #timestamp_str = now.strftime("%Y_%m_%d_%H_%M_%S")
-    file_path = './dags/logs.log'
+    file_path = '../logs.log'
 
     #log_file_name = 'log_'+ timestamp_str
     # Create handler for combined logging
