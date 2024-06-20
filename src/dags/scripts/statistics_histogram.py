@@ -12,7 +12,7 @@ def capture_histograms():
     logger.info("Started method: capture_histograms")
 
     # Info about base directory to access images and there respective classes
-    base_dir = '../../../data/Training/'
+    base_dir = './data/Training/'
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
     
     histograms = []
@@ -40,7 +40,7 @@ def capture_histograms():
 
     # Saving the histogram info for inference 
     try:
-        with open('histograms.pkl', 'wb') as f:
+        with open('./src/histograms.pkl', 'wb') as f:
             pickle.dump(histograms, f)
         logger.info("Histogram data saved successfully to histograms.pkl")
     except Exception as e:
