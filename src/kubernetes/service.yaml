@@ -1,0 +1,12 @@
+apiVersion:
+kind: Service
+metadata:
+  namespace: brain-tumor-classification
+  name: backend-service
+spec:
+  selector:
+    app: backend-deployment
+  ports:
+    - protocol: TCP
+      ports: 80
+      targetPort: 8080

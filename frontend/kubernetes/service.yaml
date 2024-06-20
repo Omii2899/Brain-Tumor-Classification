@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-service
+  namespace: streamlit-frontend
+spec:
+  type: LoadBalancer  # Expose the service using a load balancer
+  selector:
+    app: frontend-deployment
+  ports:
+    - protocol: TCP
+      port: 80  # External port
+      targetPort: 8501  # Port where Streamlit is running in the container

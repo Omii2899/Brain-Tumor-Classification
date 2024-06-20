@@ -2,3 +2,8 @@
     remote = mri-data
 ['remote "mri-data"']
     url = gs://brain-tumor-classification-dvc
+<<<<<<< HEAD
+=======
+    credentialpath = .json
+
+>>>>>>> aadarsh-0531
