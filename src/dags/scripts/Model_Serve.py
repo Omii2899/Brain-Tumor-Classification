@@ -2,8 +2,8 @@ import mlflow
 import os
 import skimage.io
 from mlflow import MlflowClient
-from src.dags.scripts.preprocessing import load_and_preprocess_image
-from src.dags.scripts.explainability import explain_inference
+from scripts.preprocessing import load_and_preprocess_image
+from scripts.explainability import explain_inference
 import os
 from google.cloud import storage
 

@@ -1,5 +1,4 @@
 apache-airflow==2.0.2
-dvc
 requests
 # apache-airflow-providers-google
 google-cloud-storage
@@ -8,5 +7,6 @@ tensorflow
 opencv-python-headless
 dvc[gs]
 mlflow
-protobuf==3.19
-numpy==1.19.5
+# protobuf==3.19
+numpy==1.23.5
+keras-tuner

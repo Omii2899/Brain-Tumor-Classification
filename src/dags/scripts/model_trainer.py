@@ -10,13 +10,13 @@ from mlflow.types.schema import Schema, ColSpec
 import os
 import mlflow
 import numpy as np
-from preprocessing import preprocessing_for_training, preprocessing_for_testing_inference
+from scripts.preprocessing import preprocessing_for_training, preprocessing_for_testing
 
-def build_model(train_generator, validation_generator):
+def build_model():#train_generator, validation_generator):
 
     # Ml Flow running on GCP Pre Check
 
-    keyfile_path = '/home/p10/Documents/tensile-topic-424308-d9-17a256b9b21c.json'  # change as per your keyfile path
+    keyfile_path = '/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json'  # change as per your keyfile path
 
     # Checking if file exists
     if not os.path.exists(keyfile_path):
@@ -74,8 +74,8 @@ def build_model(train_generator, validation_generator):
         mlflow.log_param("beta_2", 0.9925)
 
         # Prepare data generators
-        #train_generator = preprocessing_for_training()
-        #validation_generator = preprocessing_for_testing_inference(batchSize = 32)
+        train_generator = preprocessing_for_training()
+        validation_generator = preprocessing_for_testing(batchSize = 32)
 
         # Log the number of training and validation samples
         mlflow.log_param("num_train_samples", train_generator.samples)
