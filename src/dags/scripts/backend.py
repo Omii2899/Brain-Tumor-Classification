@@ -6,6 +6,7 @@ import mlflow
 import mlflow.pyfunc
 import os
 import io
+import base64
 import numpy as np
 from Model_Serve import Model_Server
 
@@ -38,6 +39,7 @@ async def predict(file: UploadFile = File(...)):
     image.save(temp_file_path, format="JPEG")
     #Make prediction
     prediction = ms.serve_model(image)
+    pred_inf = ms.explain_pred()
     folder_name = f'InferenceLogs/ImageLogs/{prediction}/'
     ms.uploadtobucket(temp_file_path, file_name, folder_name)
     
@@ -61,5 +63,43 @@ async def predict(file: UploadFile = File(...)):
     # Use the model to make a prediction
     # prediction = model.predict(image_array)
 
-    # return JSONResponse(content={"prediction": prediction.tolist()})
-    return JSONResponse(content={"prediction": prediction})
+    # # return JSONResponse(content={"prediction": prediction.tolist()})
+    # Convert images to base64 strings to send as JSON response
+    pil_inference = Image.fromarray((pred_inf[0] * 255).astype(np.uint8))
+    pil_boundaries = Image.fromarray((pred_inf[1] *255).astype(np.uint8))
+    # pil_inference = Image.fromarray(pred_inf[0])
+    # pil_boundaries = Image.fromarray(pred_inf[1])
+    # Convert the PIL image to JPEG format
+#--
+    pil_inference_buffer = io.BytesIO()
+    pil_inference.save(pil_inference_buffer, format='JPEG')
+    pil_inference_buffer.seek(0)
+
+    pil_boundaries_buffer = io.BytesIO()
+    pil_boundaries.save(pil_boundaries_buffer, format='JPEG')
+    pil_boundaries_buffer.seek(0)
+
+    #  # Encode the image bytes as base64 strings
+    # inference_base64 = base64.b64encode(pil_inference_buffer.getvalue()).decode('utf-8')
+    # boundaries_base64 = base64.b64encode(pil_boundaries_buffer.getvalue()).decode('utf-8')
+#--
+    # def image_to_bytes(image_array): 
+    #     image_pil = Image.fromarray((image_array * 255).astype(np.uint8)) 
+    #     buf = io.BytesIO() 
+    #     image_pil.save(buf, format='PNG') 
+    #     byte_im = buf.getvalue() 
+    #     return byte_im
+    
+    # img1 = image_to_bytes(pred_inf[0])
+    # img2 = image_to_bytes(pred_inf[1])
+
+    # Encode the image bytes as base64 strings
+    inference_base64 = base64.b64encode(pil_inference_buffer.getvalue()).decode('utf-8')
+    boundaries_base64 = base64.b64encode(pil_boundaries_buffer.getvalue()).decode('utf-8')
+    #return {"Prediction": prediction, "Inference": pil_inference, "Boundaries": pil_boundaries}
+    return JSONResponse(content={"Prediction": prediction, "Inference": inference_base64, "Boundaries": boundaries_base64})
+    #return JSONResponse(content={"Prediction": prediction, "Inference": img1, "Boundaries": img2})
+
+    # # Return the JPEG image as a response
+    # #return StreamingResponse(buffer, media_type="image/jpeg")
+    # return JSONResponse(content={"Prediction": prediction, "Inference": pil_inference_buffer.getvalue(), "Boundaries": pil_boundaries_buffer.getvalue()})

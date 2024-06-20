@@ -4,14 +4,28 @@ from pathlib import Path
 from streamlit.logger import get_logger
 from PIL import Image
 import io
+import base64
 
 FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
 
 # Streamlit logger
 LOGGER = get_logger(__name__)
 
+
+
+
 # Streamlit App
 def main():
+
+    def display_image_from_base64(image_base64):
+        image_bytes = base64.b64decode(image_base64)
+        image = Image.open(io.BytesIO(image_bytes))
+        st.image(image)
+
+    # def display_image_from_bytes(image_bytes):
+    #     image = Image.open(io.BytesIO(image_bytes))
+    #     st.image(image)
+
     # Set the main dashboard page browser tab title and icon
     st.set_page_config(
         page_title="Brain Tumor Classification",
@@ -76,9 +90,55 @@ def main():
         response = requests.post(f"{FASTAPI_BACKEND_ENDPOINT}/predict/", files=files)
 
         if response.status_code == 200:
-            prediction = response.json().get("prediction")
+            # result = response.json()
+            # prediction = result['Prediction']
+
+            # # image = Image.open(io.BytesIO(response.content))
+            # # st.image(image, caption='Image from FastAPI', use_column_width=False, width=300)
+            # inference = result['Inference']
+            # boundary = result['Boundaries']
+
+            # st.write(f"Prediction: {prediction}")
+            # st.write("Inference:") 
+            # display_image_from_bytes(inference) 
+            # st.write("Boundary Image:") 
+            # display_image_from_bytes(boundary)
+            result = response.json()
+            prediction = result['Prediction']
+            # Decode the base64 images
+            inference_image = Image.open(io.BytesIO(base64.b64decode(result['Inference'])))
+            boundaries_image = Image.open(io.BytesIO(base64.b64decode(result['Boundaries'])))
             st.write(f"Prediction: {prediction}")
+            # Display images side by side
+            col1, col2 = st.columns(2)
+            with col1:
+                st.image(inference_image, caption='Explanation', use_column_width=False, width=300)
+            with col2:
+                st.image(boundaries_image, caption='Marked Boundaries', use_column_width=False, width=300)
+            # st.image(inference_image, caption='Explanation', use_column_width=False, width=300)
+            # st.image(boundaries_image, caption='Marked Boundaries', use_column_width=False, width=300)
+            # inference_image = result['Inference']
+            # boundaries_image = result['Boundaries']
+
+            # st.write(f"Prediction: {prediction}")
+            # st.write("Inference:")
+            # st.image(inference_image, caption='Inference Image', use_column_width=False, width=300)
+            # st.write("Boundary Image:")
+            # st.image(boundaries_image, caption='Boundary Image', use_column_width=False, width=300)
+            #--
+            # result = response.json()
+            # prediction = result['Prediction']
+            # inference_base64 = result['Inference']
+            # boundaries_base64 = result['Boundaries']
+
+            # st.write(f"Prediction: {prediction}")
+            # st.write("Inference:") 
+            # display_image_from_base64(inference_base64)
+            # st.write("Boundary Image:") 
+            # display_image_from_base64(boundaries_base64)
+            #--
         else:
             st.write("Error: Could not get a prediction.")
+
 if __name__ == "__main__":
     main()
