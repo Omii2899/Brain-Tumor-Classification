@@ -17,11 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: 
-          imagePullPolicy: always
+          image: omii2899/brain-tumor-classification-frontend:tagname                      
+          imagePullPolicy: Always
           ports:
             - containerPort: 8501
-          resources:
-            requests:
-              memory: "800Mi"
-              cpu: "1.0"
