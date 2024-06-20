@@ -77,7 +77,18 @@ class Model_Server:
     def explain_pred(self):
         return (explain_inference(self.img_array, self.loaded_model))
     
+    def generate_unique_filename(self, existing_filenames, extension='jpg'):
+        while True:
+            random_name = f"{uuid.uuid4().hex}.{extension}"
+            if random_name not in existing_filenames:
+                return random_name
 
+    def get_existing_filenames(self, bucket_name="data-source-brain-tumor-classification"):
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blobs = bucket.list_blobs()
+        return [blob.name for blob in blobs]
+    
     def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = "data-source-brain-tumor-classification"):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
