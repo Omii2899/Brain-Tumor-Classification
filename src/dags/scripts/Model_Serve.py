@@ -11,9 +11,6 @@ import uuid
 
 class Model_Server:
 
-     
-    
-
     def __init__(self, stage):
         # Set the environment variable to point to the service account key file
         keyfile_path = '../../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
@@ -48,8 +45,6 @@ class Model_Server:
 
         else:
             logged_model = f'runs:/{model_metadata[0].run_id}/model'
-        #logged_model = 'runs:/33047b43cbe9447e94972cd460d768da/Brain_Tumor_Classification_Model'
-        #logged_model = 'runs:/c5c9b41a3163479e9e1fd4a6a8384e31/model'
 
         # Load model as a PyFuncModel.
         self.loaded_model = mlflow.pyfunc.load_model(logged_model)
@@ -64,13 +59,6 @@ class Model_Server:
         # Extract class info and create folder path to upload
         prediction_class = self._prediction(pred=preds)
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'
-
-        # #Upload inference image to logs
-        #image_buffer = io.BytesIO()
-        # img_path.save(image_buffer, format='JPEG')
-        
-        #self.uploadtobucket(img_path, folder_name)
-    
         return prediction_class
     
     # Explain prediction made using LIME
@@ -92,6 +80,7 @@ class Model_Server:
     def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = "data-source-brain-tumor-classification"):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
+
         # Use the file name with folder path as the blob name
         blob_name = os.path.join(folder_name, file_name)
         blob = bucket.blob(blob_name)
