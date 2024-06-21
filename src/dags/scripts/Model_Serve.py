@@ -2,8 +2,8 @@ import mlflow
 import io
 import skimage.io
 from mlflow import MlflowClient
-from scripts.preprocessing import load_and_preprocess_image
-from scripts.explainability import explain_inference
+from preprocessing import load_and_preprocess_image
+from explainability import explain_inference
 import os
 from PIL import Image
 from google.cloud import storage

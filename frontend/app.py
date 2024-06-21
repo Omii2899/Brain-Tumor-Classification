@@ -6,7 +6,6 @@ from PIL import Image
 import io
 import base64
 
-
 FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
 
 # Streamlit logger
@@ -14,7 +13,6 @@ LOGGER = get_logger(__name__)
 
 # Streamlit App
 def main():
-
     # Set the main dashboard page browser tab title and icon
     st.set_page_config(
         page_title="Brain Tumor Classification",
@@ -83,21 +81,36 @@ def main():
             with col2:
                 st.image(boundaries_image, caption='Marked Boundaries', use_column_width=False, width=300)
 
+            # Correct/Incorrect feedback section
+            st.write("### Is the prediction correct?")
+            if st.button('Correct'):
+                st.success("Thank you for your feedback!")
+
+            # Use session state to track if the "Incorrect" button was clicked
+            if 'incorrect_clicked' not in st.session_state:
+                st.session_state['incorrect_clicked'] = False
+
+            if st.button('Incorrect'):
+                st.session_state['incorrect_clicked'] = True
+
+            if st.session_state['incorrect_clicked']:
+                correct_classification = st.text_input("Please enter the correct classification:")
+                if correct_classification:
+                    st.write(f"Thank you! You entered: {correct_classification}")
+
         elif response.status_code == 400:
             result = response.json()
             st.error(result['error'])
-            # st.write('Preview Image')
-            # st.image(image, caption='Uploaded Image', use_column_width=False, width=300)
             retry_button = st.button('Retry')
             if retry_button:
                 st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False  # Reset image availability flag
                 st.experimental_rerun()  # Rerun the app to allow re-uploading
-            #retry_button = st.button('Retry')
             
         else:
             st.write("Error: Could not get a prediction.")
 
     if not uploaded_image or (uploaded_image and not st.session_state["IS_IMAGE_FILE_AVAILABLE"]):
         st.info("Please upload an image to proceed.")
+
 if __name__ == "__main__":
     main()
