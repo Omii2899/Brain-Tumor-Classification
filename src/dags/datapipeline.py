@@ -7,21 +7,10 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.email_operator import EmailOperator
 from scripts.logger import setup_logging
 from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training, check_source, download_files
-from dags.scripts.statistics_histogram import capture_histograms
+from scripts.statistics_histogram import capture_histograms
 from scripts.model_trainer import build_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-# -------------------------------------DAG------------------------------------------------------
-conf.set('core','enable_xcom_pickling','True')
-
-default_args = {
-     "owner": "aadarsh",
-     "retries" : 0,
-     "start_date": datetime(2023, 12, 31)
-     }
-
-dag = DAG("data_pipeline",
-     schedule_interval = "@once", default_args = default_args)
+from airflow.models import XCom
 
 
 # Define function to notify failure or sucess via an email
@@ -44,6 +33,17 @@ def notify_failure(context):
         dag=context['dag']
     )
     failure_email.execute(context=context)
+# -------------------------------------DAG------------------------------------------------------
+conf.set('core','enable_xcom_pickling','True')
+
+default_args = {
+     "owner": "aadarsh",
+     "retries" : 0,
+     "start_date": datetime(2023, 12, 31)
+     }
+
+dag = DAG("data_pipeline",
+     schedule_interval = "@once", default_args = default_args)
 
 # Define the email task
 send_email = EmailOperator(
@@ -95,11 +95,12 @@ transform_testing_data = PythonOperator(
 train_model = PythonOperator(
      task_id = 'builiding_model',
      python_callable = build_model,
-     op_args = [augment_transform_training_data.output, transform_testing_data.output], 
+     # op_args = ["{{ti.xcom_pull(key='train_generator', task_ids='augment_transform_training_data')}}",
+     #            "{{ti.xcom_pull(key='test_generator', task_ids=''transform_testing_data')}}"], 
      dag = dag
 )
 
 #check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
 
-check_source >> download_data >> capture_statistics
-capture_statistics >> [augment_transform_training_data, transform_testing_data] >> train_model >>send_email
+check_source >> download_data >> capture_statistics >> train_model >>send_email
+#capture_statistics >> [augment_transform_training_data, transform_testing_data] >> train_model >>send_email

@@ -4,10 +4,10 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from logger import setup_logging 
+from scripts.logger import setup_logging 
 from google.cloud import storage
 
-def preprocessing_for_training():
+def preprocessing_for_training(**kwargs):
 
     # Invoking the global logger method
     logger = setup_logging()
@@ -37,29 +37,30 @@ def preprocessing_for_training():
     )
 
     logger.info("Finished method: preprocessing_for_training")
+#     kwargs['ti'].xcom_push(key = 'train_generator', value = train_generator)
     return train_generator
 
-def preprocessing_for_testing(batchSize, path= './data/Testing/'):
+def preprocessing_for_testing(batchSize, path= './data/Testing/',**kwargs):
 
-    # Invoking the global logger method
-    logger = setup_logging()
-    logger.info("Started method: preprocessing_for_testing_inference")
-    logger.info(f"Image path: {path}")
-    logger.info(f'Batch size: {batchSize}')
+     # Invoking the global logger method
+     logger = setup_logging()
+     logger.info("Started method: preprocessing_for_testing_inference")
+     logger.info(f"Image path: {path}")
+     logger.info(f'Batch size: {batchSize}')
 
-    # Normalize pixel values to [0, 1]
-    test_val_datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0/255)
+     # Normalize pixel values to [0, 1]
+     test_val_datagen = ImageDataGenerator(rescale=1.0/255)
 
-    test_generator = test_val_datagen.flow_from_directory(
-    path,
-    target_size = (224, 224),
-    batch_size = batchSize,
-    class_mode = 'categorical',
-    shuffle = False
-    )
+     test_generator = test_val_datagen.flow_from_directory(
+     path,
+     target_size = (224, 224),
+     batch_size = batchSize,
+     class_mode = 'categorical',
+     shuffle = False
+     )
 
-    logger.info("Finished method: preprocessing_for_testing_inference")
-    return test_generator
+     logger.info("Finished method: preprocessing_for_testing_inference")
+     return test_generator
 
 def check_source():
      """
