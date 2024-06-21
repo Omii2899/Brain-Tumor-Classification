@@ -10,12 +10,12 @@ import base64
 import numpy as np
 from Model_Serve import Model_Server
 from statistics_histogram import validate_image
-from statistics_histogram import capture_histograms
+
 
 app = FastAPI()
 
 ms = Model_Server(stage='Staging')
-ch = capture_histograms()
+
 
 @app.get("/")
 def read_root():
