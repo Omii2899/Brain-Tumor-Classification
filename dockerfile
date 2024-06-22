@@ -1,7 +1,7 @@
-FROM python:3.8
+FROM python:3.9.14
 LABEL maintainer="Aadarsh"
 
-ARG AIRFLOW_VERSION=2.0.2
+ARG AIRFLOW_VERSION=2.2.5
 ARG AIRFLOW_HOME=/mnt/airflow
 
 WORKDIR ${AIRFLOW_HOME}
@@ -15,6 +15,7 @@ RUN apt-get update -yqq && \
     gcc \
     libhdf5-dev \
     libleveldb-dev \
+    cmake\
     && apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
@@ -40,7 +41,7 @@ RUN chown -R airflow:airflow ${AIRFLOW_HOME}
 
 USER airflow
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-17a256b9b21c.json
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 EXPOSE 8080
