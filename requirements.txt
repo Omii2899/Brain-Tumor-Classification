@@ -9,4 +9,8 @@ dvc[gs]
 mlflow
 # protobuf==3.19
 numpy==1.23.5
+tensorflow
 keras-tuner
+pillow
+scikit-image
+scikit-learn

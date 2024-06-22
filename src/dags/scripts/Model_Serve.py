@@ -1,7 +1,8 @@
 import mlflow
 import io
 import skimage.io
-from mlflow import MlflowClient
+# from mlflow import MlflowClient
+from mlflow.tracking import MlflowClient
 from scripts.preprocessing import load_and_preprocess_image
 from scripts.explainability import explain_inference
 import os

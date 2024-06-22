@@ -20,7 +20,6 @@ RUN apt-get update -yqq && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /requirements.txt
-
 # Upgrade pip separately to catch any issues
 RUN pip install --upgrade pip && \
     useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && \
@@ -28,6 +27,7 @@ RUN pip install --upgrade pip && \
     pip install -r /requirements.txt
 
 COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
+COPY ./data ${AIRFLOW_HOME}/data
 
 # Ensure the entrypoint script is executable
 RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
@@ -36,7 +36,7 @@ RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
 COPY ./src ${AIRFLOW_HOME}/
 
 # Set ownership and permissions
-RUN chown -R airflow: ${AIRFLOW_HOME}
+RUN chown -R airflow:airflow ${AIRFLOW_HOME}
 
 USER airflow
 

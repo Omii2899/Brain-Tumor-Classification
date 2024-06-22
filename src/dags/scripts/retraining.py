@@ -1,10 +1,10 @@
 import os
 import mlflow
 from google.cloud import storage
-from Model_Serve import Model_Server
-from preprocessing import download_files
+from scripts.Model_Serve import Model_Server
+from scripts.preprocessing import download_files
 from tensorflow.keras.optimizers import Adam
-from preprocessing import preprocessing_for_testing, preprocessing_for_training
+from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training
 
 def check_feedback_size_flag(bucket_name = "data-source-brain-tumor-classification", size_flag = 50):
     

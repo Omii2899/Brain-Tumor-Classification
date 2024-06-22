@@ -2,7 +2,7 @@ import cv2
 import pickle
 import os
 import glob
-from logger import setup_logging
+from scripts.logger import setup_logging
 
 # Method to capture statistics of each image in each class
 def capture_histograms():

@@ -56,7 +56,7 @@ def build_model():#train_generator, validation_generator):
         ])
 
         # Log the model summary
-        model.summary(print_fn=lambda x: mlflow.log_text(x, "model_summary.txt"))
+        #model.summary(print_fn=lambda x: mlflow.log_text(x, "model_summary.txt"))
 
         # Log the model configuration
         mlflow.log_param("model_type", "Sequential")
