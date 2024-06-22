@@ -71,16 +71,25 @@ Install the necessary dependencies using the requirements.txt file:
 pip install -r requirements.txt
 ```
 
-### 4. Get the Data from Remote Source
+### 4. Setup your DVC
 Pull the data from the remote source using DVC:
-
 ```
-dvc pull
-``` 
-
+dvc init
+ ```
+ ```
+dvc add data
+```
+####   Download the image dataset into data folder
+```
+dvc remote add (add your choice remote dvc repo)
+```
+```
+dvc push
+```
 ### 5. Add the Key File:
-You need to add the key file in src/keys folder. For security purposes, we have not included this file. To obtain this file, please contact [Aadarsh](mailto:siddha.a@northeastern.edu)  
-
+1. Create a service account for your project on GCP
+[Service Account GCP](https://cloud.google.com/iam/docs/service-accounts-create)
+2. Paste the key into src/keys folder
 
 ## Description of Files and Folders
 #### Project Structure:
