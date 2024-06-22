@@ -89,22 +89,29 @@ class Model_Server:
         blob.upload_from_string(file_path)
         return True
     
+    
+    # def delete_from_bucket(self, folder_name, file_name, bucket_name="data-source-brain-tumor-classification"):
+    #     storage_client = storage.Client()
+    #     bucket = storage_client.bucket(bucket_name)
+    #     blob_name = os.path.join(folder_name, file_name)
+    #     blob = bucket.blob(blob_name)
+    #     blob.delete()
+
+    def move_file_in_bucket(self, file_name, source_folder, destination_folder, bucket_name="data-source-brain-tumor-classification"):
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+
+        source_blob_name = os.path.join(source_folder, file_name)
+        destination_blob_name = os.path.join(destination_folder, file_name)
+        
+        source_blob = bucket.blob(source_blob_name)
+        bucket.copy_blob(source_blob, bucket, destination_blob_name)
+        source_blob.delete()
+
+    
     def _prediction(self, pred):
         prediction = pred.argsort()[0, -5:][::-1][0]
-        if prediction == 0: return "giloma"
+        if prediction == 0: return "glioma"
         elif prediction == 1: return 'meningioma'
         elif prediction == 2: return 'notumor'
         elif prediction == 3: return 'pituitary'
-        
-
-
-
-
-
-
-
-    
-
-
-
-    

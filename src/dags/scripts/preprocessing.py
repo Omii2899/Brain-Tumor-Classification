@@ -115,7 +115,7 @@ def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
 #     img_array = tf.keras.preprocessing.image.img_to_array(resized_img)
 #     img_array = np.expand_dims(img_array, 0)  # Create a batch
 #     img_array /= 255.0  # Normalize to [0, 1]
-
+    image_data = Image.open(image_data)  # Open the image file
     image = image_data.resize((224, 224))  # Resize the image
     image_array = np.array(image)
     image_array = image_array.astype('float32')  # Convert the image array to float32
