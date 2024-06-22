@@ -83,6 +83,34 @@ def main():
             with col2:
                 st.image(boundaries_image, caption='Marked Boundaries', use_column_width=False, width=300)
 
+            # Feedback section
+            st.write("### Are you happy with the results?")
+            col1, col2 = st.columns(2)
+            with col1:
+                feedback_yes = st.button('Yes')
+            with col2:
+                feedback_no = st.button('No')
+
+        if feedback_yes:
+            st.success("Thank you for your feedback!")
+        elif feedback_no:
+            st.write("### What should the correct label be?")
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                feedback_glioma = st.button('Glioma')
+            with col2:
+                feedback_meningioma = st.button('Meningioma')
+            with col3:
+                feedback_notumor = st.button('No Tumor')
+            with col4:
+                feedback_pituitary = st.button('Pituitary')
+            exit_button = st.button('Exit')
+
+            if exit_button:
+                st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False  # Reset image availability flag
+                st.experimental_rerun()  # Rerun the app to allow re-uploading
+
+
         elif response.status_code == 400:
             result = response.json()
             st.error(result['error'])
