@@ -2,7 +2,8 @@ import cv2
 import pickle
 import os
 import glob
-from logger import setup_logging
+#from logger import setup_logging
+from scripts.logger import setup_logging
 
 # Method to capture statistics of each image in each class
 def capture_histograms():
@@ -58,7 +59,7 @@ def validate_image(image):
     logger.info("Started method: validate_image")
 
     # Path to saved histograms
-    histograms_path = 'histograms.pkl'
+    histograms_path = 'scripts/histograms.pkl'
 
     # Loading histograms saved by capture_histograms
     try:

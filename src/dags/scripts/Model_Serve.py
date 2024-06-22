@@ -2,10 +2,10 @@ import mlflow
 import io
 import skimage.io
 from mlflow import MlflowClient
-# from scripts.preprocessing import load_and_preprocess_image
-# from scripts.explainability import explain_inference
-from preprocessing import load_and_preprocess_image
-from explainability import explain_inference
+from scripts.preprocessing import load_and_preprocess_image
+from scripts.explainability import explain_inference
+# from preprocessing import load_and_preprocess_image
+# from explainability import explain_inference
 import os
 from PIL import Image
 from google.cloud import storage
@@ -15,7 +15,9 @@ class Model_Server:
 
     def __init__(self, stage):
         # Set the environment variable to point to the service account key file
-        keyfile_path = '../../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+        #keyfile_path = '../../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+        keyfile_path = '../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()
