@@ -93,9 +93,10 @@ def main():
                 st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False  # Reset image availability flag
                 st.experimental_rerun()  # Rerun the app to allow re-uploading
             #retry_button = st.button('Retry')
-            
+        elif response.status_code == 500:    
+            st.write("Error: We dont understand the image")
         else:
-            st.write("Error: Could not get a prediction.")
+            st.write(f"Error: {response.status_code}")
 
     if not uploaded_image or (uploaded_image and not st.session_state["IS_IMAGE_FILE_AVAILABLE"]):
         st.info("Please upload an image to proceed.")

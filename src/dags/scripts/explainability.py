@@ -60,7 +60,7 @@ def explain_inference(img_array, model):
     simpler_model.fit(X=perturbations, y=predictions[:,:,class_to_explain], sample_weight=weights)
     coeff = simpler_model.coef_[0]
 
-    num_top_features = 6
+    num_top_features = 8
     top_features = np.argsort(coeff)[-num_top_features:]
 
     mask = np.zeros(num_superpixels)
