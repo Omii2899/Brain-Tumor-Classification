@@ -93,6 +93,15 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 │   │   ├── ...
 │   ├── Training
 │   │   ├── ...
+|---frontend
+    |--app.py
+    |--dockerfile
+    |--requirements.txt
+    |--kubernetes
+       |--deployment.yaml
+       |--namespace.yaml
+       |--service.yaml
+|---backend
 ├── src
 │   │   
 │   ├── dags
