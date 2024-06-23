@@ -8,14 +8,9 @@ import os
 import io
 import base64
 import numpy as np
-# from Model_Serve import Model_Server
-# from statistics_histogram import validate_image
-# from Model_Serve import Model_Server
-# from statistics_histogram import validate_image
 from scripts.Model_Serve import Model_Server
 from scripts.statistics_histogram import validate_image
-from scripts.Model_Serve import Model_Server
-from scripts.statistics_histogram import validate_image
+
 
 app = FastAPI()
 

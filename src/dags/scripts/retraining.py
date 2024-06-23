@@ -1,7 +1,7 @@
 import os
 import mlflow
 from google.cloud import storage
-from scripts.Model_Serve import Model_Server
+from backend.scripts.Model_Serve import Model_Server
 from scripts.preprocessing import download_files
 from tensorflow.keras.optimizers import Adam
 from scripts.logger import setup_logging

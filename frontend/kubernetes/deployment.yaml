@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: omii2899/brain-tumor-classification-frontend:tagname                      
+          image:                       
           imagePullPolicy: Always
           ports:
             - containerPort: 8501
