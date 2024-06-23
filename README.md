@@ -230,13 +230,31 @@ If the commands fail to execute, ensure that virtualization is enabled in your B
 python src/dags/datapipeline.py
 ```
 
+### Data storage and Model Registry:
+
+#### 1. Storage buckets-
+![picture alt](images/GCP-buckets.jpg)
+
+#### 2. Data buckets-
+![picture alt](images/data-bucket.jpg)
+<ul>
+    <li><strong>/data:</strong> This directory contains the dataset used for training and testing the ML model.</li>
+    <li><strong>InferenceLogs/:</strong> This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
+        <ul>
+            <li><strong>ImageLogs/:</strong> Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.</li>
+            <li><strong>ImageLogsWithFeedback/:</strong> Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.</li>
+        </ul>
+    </li>
+</ul>
+
+
 ### DAG:
 
 #### 1. Data and model build pipeline-
 
 ![picture alt](images/data-pipeline.jpg)
 
-<ol> <li><strong>check_source:</strong> Checking     the data source to verify its availability.
+<ol> <li><strong>check_source:</strong> Checking the data source to verify its availability.
 <li><strong> download_data:</strong> Downloading the necessary data if the source is valid.
 <li><strong> capture_statistics:</strong> Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
 <li> <strong>augment_input_data:</strong> Perfomring data augmentation, feature engineering, and other preprocessing steps.
