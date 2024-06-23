@@ -16,7 +16,12 @@ class Model_Server:
     def __init__(self, stage):
         setup_logging().info("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
-        keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+        keyfile_path = "../keys/tensile-topic-424308-d9-db4cf58ea349.json" 
+        print(keyfile_path)
+        # Checking if file exists
+        if not os.path.exists(keyfile_path):
+            raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
+
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()

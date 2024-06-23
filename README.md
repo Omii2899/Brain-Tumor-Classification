@@ -200,8 +200,8 @@ python src/dags/datapipeline.py
 ```
 
 ### DAG:
-![picture alt](images/datapipeline.png)
-![picture alt](images/daggraph.png)
+![picture alt](images/data-pipeline.jpg)
+![picture alt](images/retrain-pipeline.png)
 
 ## Contributors
 
