@@ -54,8 +54,9 @@ def main():
     """)
 
     # Image upload section
-    # uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg", "jpeg"])
-    uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg"])
+    #uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg"])
+
+    uploaded_image = st.file_uploader("Upload a Brain MRI Image", type=["jpg", "jpeg", "png"])
 
     # Check if client has provided an input image file
     if uploaded_image:
