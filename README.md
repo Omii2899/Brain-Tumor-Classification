@@ -209,16 +209,22 @@ python src/dags/datapipeline.py
 ```
 
 ### DAG:
+
+#### 1. Data and model build pipeline-
+
 ![picture alt](images/data-pipeline.jpg)
 
-1. check_source: Checkint the data source to verify its availability.
-2. download_data: Downloading the necessary data if the source is valid.
-3. capture_statistics: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
-4. augment_input_data: Perfomring data augmentation, feature engineering, and other preprocessing steps.
-5. transform_testing_data: Transforming the testing data to ensure it is in the correct format for model evaluation.
-6. building_model: Builds the machine learning model using the prepared data.
-7. send_email: Sends an email notification upon a successful model build.
+<ol> <li><strong>check_source:</strong> Checkint the data source to verify its availability.
+<li><strong> download_data:</strong> Downloading the necessary data if the source is valid.
+<li><strong> capture_statistics: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
+<li> <strong>augment_input_data:</strong> Perfomring data augmentation, feature engineering, and other preprocessing steps.
+<li><strong>transform_testing_data:</strong> Transforming the testing data to ensure it is in the correct format for model evaluation.
+<li><strong> building_model:</strong> Builds the machine learning model using the prepared data.
+<li> <strong>send_email:</strong> Sends an email notification upon a successful model build.
 
+</ol>
+
+#### 2. Model Retraining pipeline-
 ![picture alt](images/retrain-pipeline.jpg)
 
 ## Contributors
