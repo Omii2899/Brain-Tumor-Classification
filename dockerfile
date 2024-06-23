@@ -28,7 +28,6 @@ RUN pip install --upgrade pip && \
     pip install -r /requirements.txt
 
 COPY ./entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
-COPY ./data ${AIRFLOW_HOME}/data
 
 # Ensure the entrypoint script is executable
 RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
@@ -41,7 +40,7 @@ RUN chown -R airflow:airflow ${AIRFLOW_HOME}
 
 USER airflow
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-17a256b9b21c.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 EXPOSE 8080
