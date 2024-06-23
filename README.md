@@ -1,6 +1,6 @@
 # Brain-Tumor-Classification
 
-This repository contains the code and configuration files for a Brain Tumor Detection MLOps project. The project includes data versioning, data pipelines, and Docker for containerization.
+This project is designed to develop, deploy, and maintain a machine learning model for brain tumor classification. The project utilizes a Machine Learning Operations (MLOps) approach to streamline the development, deployment, and monitoring of the model. The project directory is structured to support data version control, modular coding, and containerized deployment.
 
 ## Introduction
 
@@ -93,8 +93,16 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 │   │   ├── ...
 │   ├── Training
 │   │   ├── ...
+├── frontend
+│   ├── app.py
+│   ├── dockerfile
+│   ├── requirements.txt
+│   ├── kubernetes
+│       ├── deployment.yaml
+│       ├── namespace.yaml
+│       ├── service.yaml
+├── backend
 ├── src
-│   │   
 │   ├── dags
 │   │   ├── scripts
 │   │       ├── logger.py
@@ -102,13 +110,14 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 │   │       ├── statistics.py
 │   │   ├── datapipeline.py
 │   └── keys
-│   │       ├── keyfile.json
+│       ├── keyfile.json
 ├── .dvcignore
 ├── .gitignore
 ├── data.dvc
 ├── dockerfile
 ├── entrypoint.sh
 ├── requirements.txt
+
 ```
 
 #### Source code files:
@@ -201,7 +210,16 @@ python src/dags/datapipeline.py
 
 ### DAG:
 ![picture alt](images/data-pipeline.jpg)
-![picture alt](images/retrain-pipeline.png)
+
+1. check_source: Checkint the data source to verify its availability.
+2. download_data: Downloading the necessary data if the source is valid.
+3. capture_statistics: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
+4. augment_input_data: Perfomring data augmentation, feature engineering, and other preprocessing steps.
+5. transform_testing_data: Transforming the testing data to ensure it is in the correct format for model evaluation.
+6. building_model: Builds the machine learning model using the prepared data.
+7. send_email: Sends an email notification upon a successful model build.
+
+![picture alt](images/retrain-pipeline.jpg)
 
 ## Contributors
 
