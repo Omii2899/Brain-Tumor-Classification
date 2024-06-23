@@ -249,6 +249,10 @@ python src/dags/datapipeline.py
 #### 2. Model Retraining pipeline-
 ![picture alt](images/retrain-pipeline.jpg)
 
+## Application Interface
+
+![picture alt](images/ui-1.png)
+
 ## Contributors
 
 [Aadrash Siddha](https://github.com/Omii2899) <br> [Akshita Singh](https://github.com/akshita-singh-2000) <br>  [Praneith Ranganath](https://github.com/Praneith) <br>  [Shaun Kirtan](https://github.com/) <br>   [Yashasvi Sharma](https://github.com/yashasvi14) 
