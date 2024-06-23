@@ -160,7 +160,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 /data
-akshita_keyfile.json
 /src/keys
 .dvc/config
 /src/notebooks/.ipynb_checkpoints
@@ -169,3 +168,4 @@ akshita_keyfile.json
 mlruns/
 model_runs/
 /src/keys
+/vmlops

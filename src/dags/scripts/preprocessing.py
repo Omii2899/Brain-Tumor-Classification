@@ -5,9 +5,10 @@ import numpy as np
 from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from scripts.logger import setup_logging 
+#from logger import setup_logging 
 from google.cloud import storage
 
-def preprocessing_for_training(**kwargs):
+def preprocessing_for_training():
 
     # Invoking the global logger method
     logger = setup_logging()
@@ -38,9 +39,9 @@ def preprocessing_for_training(**kwargs):
 
     logger.info("Finished method: preprocessing_for_training")
 #     kwargs['ti'].xcom_push(key = 'train_generator', value = train_generator)
-    return train_generator
+    #return train_generator
 
-def preprocessing_for_testing(batchSize, path= './data/Testing/',**kwargs):
+def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
      # Invoking the global logger method
      logger = setup_logging()
@@ -60,7 +61,7 @@ def preprocessing_for_testing(batchSize, path= './data/Testing/',**kwargs):
      )
 
      logger.info("Finished method: preprocessing_for_testing_inference")
-     return test_generator
+     #return test_generator
 
 def check_source():
      """
@@ -114,7 +115,7 @@ def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
 #     img_array = tf.keras.preprocessing.image.img_to_array(resized_img)
 #     img_array = np.expand_dims(img_array, 0)  # Create a batch
 #     img_array /= 255.0  # Normalize to [0, 1]
-
+    image_data = Image.open(image_data)  # Open the image file
     image = image_data.resize((224, 224))  # Resize the image
     image_array = np.array(image)
     image_array = image_array.astype('float32')  # Convert the image array to float32

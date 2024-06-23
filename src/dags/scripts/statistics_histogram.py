@@ -2,15 +2,14 @@ import cv2
 import pickle
 import os
 import glob
-from logger import setup_logging
 import numpy as np
 from scipy.stats import pearsonr
 from google.cloud import storage
-
+from scripts.logger import setup_logging
 
 BUCKET_NAME = "data-source-brain-tumor-classification"
 HISTOGRAMS_FILE = 'validation/histograms.pkl'
-keyfile_path = '/Users/praneithranganath/Documents/GitHub/Brain-Tumor-Classification/src/keys/tensile-topic-424308-d9-17a256b9b21c.json' 
+keyfile_path = '..\keys\tensile-topic-424308-d9-db4cf58ea349.json' 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
 def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
@@ -21,7 +20,7 @@ def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
 
     blob.upload_from_filename(source_file_name)
 
-    
+    setup_logging().info(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
@@ -31,14 +30,12 @@ def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
 
     blob.download_to_filename(destination_file_name)
 
-    
+    setup_logging().info(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
 
 def capture_histograms():
-    logger = setup_logging()
-    logger.info("Started method: capture_histograms")
-
     base_dir = './data/Training/'
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
+    logger = setup_logging()
     
     histograms = []
 
@@ -67,48 +64,45 @@ def capture_histograms():
                             valid_histograms.append(hist_image)
 
                     except Exception as e:
-                        logger.info(f"Error processing image {image_path}: {e}")
+                        setup_logging().error(f"Error processing image {image_path}: {e}")
 
                 histograms.extend(valid_histograms)
-                logger.info(f"Captured {len(valid_histograms)} histograms for class {cls}")
+                setup_logging().info(f"Captured {len(valid_histograms)} histograms for class {cls}")
 
             except Exception as e:
-                logger.info(f"Error processing images in folder {folder_path}: {e}")
+                setup_logging().error(f"Error processing images in folder {folder_path}: {e}")
         else:
-            logger.info(f"No images found in directory: {folder_path}")
+            setup_logging().info(f"No images found in directory: {folder_path}")
             return False
     
-    logger.info("Finished capturing histograms")
+    setup_logging().info("Finished capturing histograms")
 
     try:
-        local_histogram_path = './src/histograms.pkl'
+        local_histogram_path = './histograms.pkl'
         with open(local_histogram_path, 'wb') as f:
             pickle.dump(histograms, f)
-        logger.info("Histogram data saved locally to histograms.pkl")
+        print("Histogram data saved locally to histograms.pkl")
 
         upload_to_gcs(BUCKET_NAME, HISTOGRAMS_FILE, local_histogram_path)
-        logger.info("Histogram data uploaded to GCS")
+        setup_logging().info("Histogram data uploaded to GCS")
 
     except Exception as e:
-        logger.info(f"Error saving histogram data: {e}")
+        setup_logging().error(f"Error saving histogram data: {e}")
         return False
     
-    logger.info("Finished method: capture_histograms")
+    setup_logging().info("Finished method: capture_histograms")
     return True
 
 def validate_image(image):
-    logger = setup_logging()
-    logger.info("Started method: validate_image")
-
-    local_histogram_path = './src/histograms.pkl'
+    local_histogram_path = './histograms.pkl'
 
     try:
         download_from_gcs(BUCKET_NAME, HISTOGRAMS_FILE, local_histogram_path)
         with open(local_histogram_path, 'rb') as f:
             histograms = pickle.load(f)
-        logger.info("Loaded histograms from histograms.pkl")
+        setup_logging().info("Loaded histograms from histograms.pkl")
     except Exception as e:
-        logger.exception(f"Failed to load histograms: {e}")
+        setup_logging().error(f"Failed to load histograms: {e}")
         return False
     
     load_image = cv2.imread(image)
@@ -117,10 +111,9 @@ def validate_image(image):
 
     for hist in histograms:
         correlation = cv2.compareHist(histogram, hist, cv2.HISTCMP_CORREL)
-        logger.info(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
+        print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
             return True
 
-    logger.info("Finished method: validate_image")   
+    setup_logging().info("Finished method: validate_image")   
     return False
-
