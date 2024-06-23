@@ -8,7 +8,7 @@ from scripts.logger import setup_logging
 #from logger import setup_logging 
 from google.cloud import storage
 
-def preprocessing_for_training(**kwargs):
+def preprocessing_for_training():
 
     # Invoking the global logger method
     logger = setup_logging()
@@ -39,9 +39,9 @@ def preprocessing_for_training(**kwargs):
 
     logger.info("Finished method: preprocessing_for_training")
 #     kwargs['ti'].xcom_push(key = 'train_generator', value = train_generator)
-    return train_generator
+    #return train_generator
 
-def preprocessing_for_testing(batchSize, path= './data/Testing/',**kwargs):
+def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
      # Invoking the global logger method
      logger = setup_logging()
@@ -61,7 +61,7 @@ def preprocessing_for_testing(batchSize, path= './data/Testing/',**kwargs):
      )
 
      logger.info("Finished method: preprocessing_for_testing_inference")
-     return test_generator
+     #return test_generator
 
 def check_source():
      """

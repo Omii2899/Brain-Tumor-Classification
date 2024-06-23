@@ -1,7 +1,7 @@
-FROM python:3.8
+FROM python:3.9.14
 LABEL maintainer="Aadarsh"
 
-ARG AIRFLOW_VERSION=2.0.2
+ARG AIRFLOW_VERSION=2.2.5
 ARG AIRFLOW_HOME=/mnt/airflow
 
 WORKDIR ${AIRFLOW_HOME}
@@ -15,12 +15,12 @@ RUN apt-get update -yqq && \
     gcc \
     libhdf5-dev \
     libleveldb-dev \
+    cmake\
     && apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /requirements.txt
-
 # Upgrade pip separately to catch any issues
 RUN pip install --upgrade pip && \
     useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && \
@@ -36,7 +36,7 @@ RUN chmod +x ${AIRFLOW_HOME}/entrypoint.sh
 COPY ./src ${AIRFLOW_HOME}/
 
 # Set ownership and permissions
-RUN chown -R airflow: ${AIRFLOW_HOME}
+RUN chown -R airflow:airflow ${AIRFLOW_HOME}
 
 USER airflow
 

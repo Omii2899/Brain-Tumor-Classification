@@ -5,7 +5,7 @@ from airflow import configuration as conf
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.operators.email_operator import EmailOperator
-from src.dags.scripts.retraining import check_feedback_size_flag, retrain_model
+from scripts.retraining import check_feedback_size_flag, retrain_model
 
 
 
@@ -18,7 +18,7 @@ default_args = {
      "start_date": datetime(2023, 12, 31)
      }
 
-dag = DAG("data_pipeline",
+dag = DAG("Retraining_pipeline",
      schedule_interval = "@once", default_args = default_args)
 
 # Define function to notify failure or sucess via an email

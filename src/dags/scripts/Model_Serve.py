@@ -1,11 +1,11 @@
 import mlflow
 import io
 import skimage.io
-from mlflow import MlflowClient
+# from mlflow import MlflowClient
+from mlflow.tracking import MlflowClient
 from scripts.preprocessing import load_and_preprocess_image
 from scripts.explainability import explain_inference
-# from preprocessing import load_and_preprocess_image
-# from explainability import explain_inference
+from scripts.logger import setup_logging
 import os
 from PIL import Image
 from google.cloud import storage
@@ -14,23 +14,25 @@ import uuid
 class Model_Server:
 
     def __init__(self, stage):
+        setup_logging().info("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
-        #keyfile_path = '../../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
-        keyfile_path = '../keys/tensile-topic-424308-d9-7418db5a1c90.json' 
-
+        keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()
 
     def _loadmodel(self):
-
+        
+        model_name = 'Model_1_50_50'
+        setup_logging().info("Method started: loadmodel")
         os.environ['MLFLOW_GCS_BUCKET'] = 'ml-flow-remote-tracker-bucket'
 
         mlflow.set_tracking_uri("http://35.231.231.140:5000/")
         mlflow.set_experiment("Brain-Tumor-Classification")
 
         client = MlflowClient()
-        model_metadata = client.get_latest_versions('Model_1_50_50', stages=[self.stage])
+        setup_logging().info(f"Loading model : {model_name}, Stage : {self.stage}")
+        model_metadata = client.get_latest_versions(model_name, stages=[self.stage])
 
         if len(model_metadata)>1:
         
@@ -50,8 +52,11 @@ class Model_Server:
         else:
             logged_model = f'runs:/{model_metadata[0].run_id}/model'
 
+        setup_logging().info(f"Loading model: {logged_model}")
+
         # Load model as a PyFuncModel.
         self.loaded_model = mlflow.pyfunc.load_model(logged_model)
+        setup_logging().info("Method finished: loadmodel")
         
 
     def serve_model(self, img_path):

@@ -88,13 +88,14 @@ augment_transform_training_data = PythonOperator(
 transform_testing_data = PythonOperator(
      task_id = 'transform_testing_data',
      python_callable = preprocessing_for_testing,
-     op_args = ['./data/Testing', 32], # path,batch size
+     op_args = [32], # path,batch size
      dag = dag
 )
 
 train_model = PythonOperator(
      task_id = 'builiding_model',
      python_callable = build_model,
+     #op_args = [augment_transform_training_data.output, transform_testing_data.output],
      # op_args = ["{{ti.xcom_pull(key='train_generator', task_ids='augment_transform_training_data')}}",
      #            "{{ti.xcom_pull(key='test_generator', task_ids=''transform_testing_data')}}"], 
      dag = dag
@@ -102,5 +103,4 @@ train_model = PythonOperator(
 
 #check_source >> download_data >> capture_statistics >> augment_transform_training_data >> transform_testing_data
 
-check_source >> download_data >> capture_statistics >> train_model >>send_email
-#capture_statistics >> [augment_transform_training_data, transform_testing_data] >> train_model >>send_email
+check_source >> download_data >> capture_statistics >> [augment_transform_training_data, transform_testing_data] >> train_model >> send_email
