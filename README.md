@@ -130,20 +130,42 @@ You need to add the key file in src/keys folder. For security purposes, we have 
         </ul>
     </li>
     <br>
-    <li><strong>Data</strong>
+    <br>
+    <li><strong>Frontend</strong>
         <ul>
-            <li><strong>Testing</strong>: Contains subfolders with testing images.</li>
-            <li><strong>Training</strong>: Contains subfolders with training images.</li>
+            <li><strong>app.py</strong>: Main streamlit application file for the frontend.</li>
+            <li><strong>dockerfile</strong>: Dockerfile to build the frontend application into a Docker image.</li>
+            <li><strong>requirements.txt</strong>: Lists the Python dependencies for the frontend.</li>
+            <li><strong>kubernetes</strong>:
+                <ul>
+                    <li><strong>deployment.yaml</strong>: Kubernetes deployment configuration for the frontend.</li>
+                    <li><strong>namespace.yaml</strong>: Kubernetes namespace configuration.</li>
+                    <li><strong>service.yaml</strong>: Kubernetes service configuration.</li>
+                </ul>
+            </li>
         </ul>
     </li>
     <br>
-    <li><strong>Source </strong>
+    <li><strong>Backend</strong>
         <ul>
-            <li><strong>datapipeline.py</strong>: Orchestrates the data pipeline process, integrating various preprocessing and processing scripts.</li>
-            <li><strong>scripts</strong>: 
+            <li><strong>(empty folder)</strong>: Placeholder for backend-related files.</li>
+        </ul>
+    </li>
+    <br>
+    <li><strong>Source</strong>
+        <ul>
+            <li><strong>dags</strong>:
+                <ul>
+                    <li><strong>datapipeline.py</strong>: Orchestrates the initial data pipeline and model building process</li>
+                    <li><strong>retraining_pipeline.py</strong>: Orchestrates the model retraining pipeline based on certain flags</li>
+                </ul>
+            </li>
+            <li><strong>keys</strong>: Files containing keys or credentials needed for the project.
+            </li>
+            <li><strong>scripts</strong>:
                 <ul>
                     <li><strong>logger.py</strong>: Sets up and configures logging for the project. It creates a logger instance with a specific format and log level.</li>
-                    <li><strong>preprocessing.py</strong>: Handles image preprocessing for both training and testing phases using TensorFlow's <code>ImageDataGenerator</code>. It contains two primary functions: <code>preprocessing_for_training </code> that applies various augmentation techniques, such as normalization, rotation, width and height shifts, shearing, zooming, and horizontal flipping, to enhance the training datasetand and <code>preprocessing_for_testing_inference</code> for normalizing the data.</li>
+                    <li><strong>preprocessing.py</strong>: Handles image preprocessing for both training and testing phases using TensorFlow's <code>ImageDataGenerator</code>
                     <li><strong>statistics.py</strong>: Captures statistics of each image in each class, generates histograms, and validates images against these histograms using OpenCV.</li>
                 </ul>
             </li>
@@ -160,7 +182,7 @@ You need to add the key file in src/keys folder. For security purposes, we have 
     <br>
     <li><strong>Docker Configuration</strong>
         <ul>
-            <li><strong>Dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
+            <li><strong>dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
         </ul>
     </li>
     <br>
@@ -168,14 +190,14 @@ You need to add the key file in src/keys folder. For security purposes, we have 
         <ul>
             <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
         </ul>
-    </li><br>
+    </li>
+    <br>
     <li><strong>Dependencies</strong>
         <ul>
             <li><strong>requirements.txt</strong>: Lists the Python dependencies needed for the project.</li>
         </ul>
     </li>
 </ol>
-
 
 ## Running the data pipeline
 To run the pipeline, you can use Docker for containerization.
@@ -214,9 +236,9 @@ python src/dags/datapipeline.py
 
 ![picture alt](images/data-pipeline.jpg)
 
-<ol> <li><strong>check_source:</strong> Checkint the data source to verify its availability.
+<ol> <li><strong>check_source:</strong> Checking     the data source to verify its availability.
 <li><strong> download_data:</strong> Downloading the necessary data if the source is valid.
-<li><strong> capture_statistics: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
+<li><strong> capture_statistics:</strong> Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
 <li> <strong>augment_input_data:</strong> Perfomring data augmentation, feature engineering, and other preprocessing steps.
 <li><strong>transform_testing_data:</strong> Transforming the testing data to ensure it is in the correct format for model evaluation.
 <li><strong> building_model:</strong> Builds the machine learning model using the prepared data.
