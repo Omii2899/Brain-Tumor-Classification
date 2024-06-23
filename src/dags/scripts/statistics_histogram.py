@@ -9,7 +9,7 @@ from scripts.logger import setup_logging
 
 BUCKET_NAME = "data-source-brain-tumor-classification"
 HISTOGRAMS_FILE = 'validation/histograms.pkl'
-keyfile_path = '/mnt/airflow/keys/tensile-topic-424308-d9-17a256b9b21c.json' 
+keyfile_path = '/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.jsonn' 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
 def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):

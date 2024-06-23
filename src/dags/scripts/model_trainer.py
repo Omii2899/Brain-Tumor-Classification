@@ -18,7 +18,7 @@ def build_model():#train_generator, validation_generator):
     # Ml Flow running on GCP Pre Check
     logger = setup_logging()
     logger.info("Started method: Building Model")
-    keyfile_path = '/mnt/airflow/keys/tensile-topic-424308-d9-17a256b9b21c.json'  # change as per your keyfile path
+    keyfile_path = '/mnt/airflow/keys/tensile-topic-424308-d9-7418db5a1c90.json'  # change as per your keyfile path
 
     # Checking if file exists
     if not os.path.exists(keyfile_path):
