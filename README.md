@@ -235,8 +235,10 @@ python src/dags/datapipeline.py
 #### 1. Storage buckets-
 ![picture alt](images/GCP-buckets.jpg)
 
+
 #### 2. Data buckets-
 ![picture alt](images/data-bucket.jpg)
+
 <ul>
     <li><strong>/data:</strong> This directory contains the dataset used for training and testing the ML model.</li>
     <li><strong>InferenceLogs/:</strong> This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
