@@ -23,14 +23,14 @@ jobs:
       - name: install google cloud cli
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: tensile-topic-424308-d9
+          project_id:  ${{ secrets.GOOGLEPROJECT }}
           #${{ secrets.GOOGLEPROJECT }}
           service_account_key: ${{ secrets.GOOGLECREDENTIALS }}
           export_default_credentials: true
 
       - name: build and push docker image
         env:
-          GOOGLE_PROJECT: tensile-topic-424308-d9
+          GOOGLE_PROJECT:  ${{ secrets.GOOGLEPROJECT }}
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
           docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest .
