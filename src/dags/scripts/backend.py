@@ -12,7 +12,6 @@ import numpy as np
 # from statistics_histogram import validate_image
 # from Model_Serve import Model_Server
 # from statistics_histogram import validate_image
-import tempfile
 from scripts.Model_Serve import Model_Server
 from scripts.statistics_histogram import validate_image
 from scripts.Model_Serve import Model_Server
@@ -32,9 +31,7 @@ async def predict(file: UploadFile = File(...)):
     image = Image.open(io.BytesIO(contents))
 
     image_path = "/tmp/temp_image.jpg"
-    #image.save(image_path, format="JPEG")
-    image.convert("RGB").save(image_path, format="JPEG")  # Convert to JPEG format
-
+    image.save(image_path, format="JPEG")
     is_valid = validate_image(image_path)
     if not is_valid:
         return JSONResponse(content={"error": "Invalid Image. Please upload a correct brain MRI image."}, status_code=400)

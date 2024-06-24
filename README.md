@@ -24,7 +24,7 @@ All data used are sourced from publicly available datasets with proper usage per
 
 ## Project workflow
 
-![picture alt](images/deployment_architecture.png)
+![picture alt](assets/model-architecture.jpeg)
 
 ## Prerequisites
 
@@ -233,11 +233,11 @@ python src/dags/datapipeline.py
 ### Data storage and Model Registry:
 
 #### 1. Storage buckets-
-![picture alt](images/GCP-buckets.jpg)
+![picture alt](assets/GCP-buckets.jpg)
 
 
 #### 2. Data buckets-
-![picture alt](images/data-bucket.jpg)
+![picture alt](assets/data-bucket.jpg)
 
 <ul>
     <li><strong>/data:</strong> This directory contains the dataset used for training and testing the ML model.</li>
@@ -254,7 +254,7 @@ python src/dags/datapipeline.py
 
 #### 1. Data and model build pipeline-
 
-![picture alt](images/data-pipeline.jpg)
+![picture alt](assets/data-pipeline.jpg)
 
 <ol> <li><strong>check_source:</strong> Checking the data source to verify its availability.
 <li><strong> download_data:</strong> Downloading the necessary data if the source is valid.
@@ -267,11 +267,11 @@ python src/dags/datapipeline.py
 </ol>
 
 #### 2. Model Retraining pipeline-
-![picture alt](images/retrain-pipeline.jpg)
+![picture alt](assets/retrain-pipeline.jpg)
 
 ## Application Interface
 
-![picture alt](images/ui-1.png)
+![picture alt](assets/ui-1.png)
 
 ## Contributors
 
