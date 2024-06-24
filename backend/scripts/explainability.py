@@ -1,5 +1,4 @@
 import numpy as np
-import keras
 from keras.applications.imagenet_utils import decode_predictions
 import skimage.io
 import skimage.segmentation
