@@ -25,7 +25,7 @@ jobs:
       name: build and push docker image
       env:
         GOOGLE_PROJECT: ${{ secrets.GOOGLEPROJECT }}
-      run:
+      run: |
         gcloud auth configure-docker us-east1-docker.pkg.dev
         docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest .
         docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest
