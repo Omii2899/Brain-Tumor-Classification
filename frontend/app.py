@@ -7,7 +7,11 @@ import io
 import base64
 
 #FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
-FASTAPI_BACKEND_ENDPOINT = "http://0.0.0.0:8000"
+#FASTAPI_BACKEND_ENDPOINT = "http://0.0.0.0:8000"
+#FASTAPI_BACKEND_ENDPOINT = "http://host.docker.internal:8000"
+FASTAPI_BACKEND_ENDPOINT = "http://172.17.0.1:8000"
+
+
 
 
 # Streamlit logger
