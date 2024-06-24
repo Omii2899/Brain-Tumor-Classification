@@ -60,18 +60,21 @@ class Model_Server:
         
 
     def serve_model(self, img_path):
-
+    
         # Load and make prediction
         self.img_array = load_and_preprocess_image(img_path)
         preds = self.loaded_model.predict(self.img_array)
 
         # Extract class info and create folder path to upload
         prediction_class = self._prediction(pred=preds)
+        setup_logging().info(f"Serving model for image: {img_path} ; Prediction: {prediction_class}")
+
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'
         return prediction_class
     
     # Explain prediction made using LIME
     def explain_pred(self):
+        setup_logging().info(f"Inference explained")
         return (explain_inference(self.img_array, self.loaded_model))
     
     def generate_unique_filename(self, existing_filenames, extension='jpg'):
