@@ -12,20 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      name: code checkout
-      uses: actions/checkout@v2
+      - name: code checkout
+        uses: actions/checkout@v2
 
-      name: install google cloud cli
-      uses: google-github-actions/setup-gcloud@v0
-      with:
-        project_id: ${{ secrets.GOOGLEPROJECT }}
-        service_account_key: ${{ secrets.GOOGLECREDENTIALS }}
-        export_default_credentials: true
+      - name: install google cloud cli
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLEPROJECT }}
+          service_account_key: ${{ secrets.GOOGLECREDENTIALS }}
+          export_default_credentials: true
 
-      name: build and push docker image
-      env:
-        GOOGLE_PROJECT: ${{ secrets.GOOGLEPROJECT }}
-      run: |
-        gcloud auth configure-docker us-east1-docker.pkg.dev
-        docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest .
-        docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest
+      - name: build and push docker image
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLEPROJECT }}
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev
+          docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest .
+          docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/DAGS:latest
