@@ -23,9 +23,11 @@ COPY main.py .
 COPY ./scripts /app/scripts
 COPY ./keys /app/keys
 # Expose the port that the app runs on
-EXPOSE 8000
+#EXPOSE 8000
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/keys/tensile-topic-424308-d9-7418db5a1c90.json
 
 # Command to run the FastAPI app with uvicorn
+#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-# 
+#CMD ["uvicorn", "main:app", "--port", "8000"]
+#CMD ["uvicorn", "main:app"]
