@@ -6,8 +6,9 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.operators.email_operator import EmailOperator
 from scripts.retraining import check_feedback_size_flag, retrain_model
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 # -------------------------------------DAG------------------------------------------------------
 conf.set('core','enable_xcom_pickling','True')
@@ -25,7 +26,7 @@ dag = DAG("Retraining_pipeline",
 def notify_success(context):
     success_email = EmailOperator(
         task_id='success_email',
-        to='sharma.yasha@northeastern.edu',
+        to=os.getenv('EMAIL_TO'),
         subject='Success Notification from Airflow',
         html_content='<p>The dag tasks succeeded.</p>',
         dag=context['dag']
@@ -35,7 +36,7 @@ def notify_success(context):
 def notify_failure(context):
     failure_email = EmailOperator(
         task_id='failure_email',
-        to='sharma.yasha@northeastern.edu',
+        to=os.getenv('EMAIL_TO'),
         subject='Failure Notification from Airflow',
         html_content='<p>The dag tasks failed.</p>',
         dag=context['dag']
@@ -45,7 +46,7 @@ def notify_failure(context):
 # Define the email task
 send_email = EmailOperator(
     task_id='send_email',
-    to='sharma.yasha@northeastern.edu',    # Email address of the recipient
+    to=os.getenv('EMAIL_TO'),    # Email address of the recipient
     subject='Notification from Airflow',
     html_content='<p>This is a notification email sent from Airflow indicating that the retraining dag was completd</p>',
     dag=dag,
@@ -56,7 +57,7 @@ send_email = EmailOperator(
 
 flag_true = EmailOperator(
     task_id = 'flag_true',
-    to='sharma.yasha@northeastern.edu',    
+    to=os.getenv('EMAIL_TO'),    
     subject='Notification from Airflow for Retraining',
     html_content='<p>This is a notification email sent from Airflow indicating that the dag was triggered and retraining is in progress</p>',
     dag=dag
@@ -64,7 +65,7 @@ flag_true = EmailOperator(
 
 flag_false = EmailOperator(
     task_id = 'flag_false',
-    to='sharma.yasha@northeastern.edu',   
+    to=os.getenv('EMAIL_TO'),   
     subject='Notification from Airflow for Retraining',
     html_content='<p>This is a notification email sent from Airflow indicating that the dag was triggered but stopped retraining stopped due to insuffucent files</p>',
     dag=dag

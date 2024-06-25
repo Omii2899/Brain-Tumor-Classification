@@ -6,10 +6,12 @@ import numpy as np
 from scipy.stats import pearsonr
 from google.cloud import storage
 from scripts.logger import setup_logging
+from dotenv import load_dotenv, dotenv_values
 
-BUCKET_NAME = "data-source-brain-tumor-classification"
-HISTOGRAMS_FILE = 'validation/histograms.pkl'
-keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+load_dotenv()
+BUCKET_NAME = os.getenv('BUCKET_NAME')
+HISTOGRAMS_FILE = os.getenv('HISTOGRAMS_FILE_PATH_GCP')
+keyfile_path = os.getenv('KEYFILE_PATH') 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
 def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
@@ -117,3 +119,4 @@ def validate_image(image):
 
     setup_logging().info("Finished method: validate_image")   
     return False
+

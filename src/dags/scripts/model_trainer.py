@@ -8,17 +8,21 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import mlflow.types.schema as schema
 from mlflow.types.schema import Schema, ColSpec
 from scripts.logger import setup_logging
+from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training
 import os
 import mlflow
 import numpy as np
-#from scripts.preprocessing import preprocessing_for_training, preprocessing_for_testing
+from dotenv import load_dotenv
+
 
 def build_model():#train_generator, validation_generator):
 
-    # Ml Flow running on GCP Pre Check
+    load_dotenv()
+    
     logger = setup_logging()
     logger.info("Started method: Building Model")
-    keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json'  # change as per your keyfile path
+    #keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json'  # change as per your keyfile path
+    keyfile_path = os.getenv('KEYFILE_PATH')
 
     # Checking if file exists
     if not os.path.exists(keyfile_path):
@@ -28,10 +32,10 @@ def build_model():#train_generator, validation_generator):
 
     # Set the environment variable to point to the service account key file
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
-    os.environ['MLFLOW_GCS_BUCKET'] = 'ml-flow-remote-tracker-bucket'
+    os.environ['MLFLOW_GCS_BUCKET'] = os.getenv('MLFLOW_BUCKET')
 
-    mlflow.set_tracking_uri("http://35.231.231.140:5000/")
-    mlflow.set_experiment("Brain-Tumor-Classification")
+    mlflow.set_tracking_uri(os.getenv('MLFLOW_TRACKING_URL'))
+    mlflow.set_experiment(os.getenv('MLFLOW_EXPERIMENT'))
 
     num_classes = 4
     img_shape = (224, 224, 3)
@@ -76,7 +80,7 @@ def build_model():#train_generator, validation_generator):
         mlflow.log_param("beta_2", 0.9925)
 
         # Prepare data generators
-        # train_generator = preprocessing_for_training()
+        
         path = './data/Training/'
 
         train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
@@ -98,7 +102,7 @@ def build_model():#train_generator, validation_generator):
         shuffle = True,
         seed = 42
         )
-        # validation_generator = preprocessing_for_testing(batchSize = 32)
+    
         test_val_datagen = ImageDataGenerator(rescale=1.0/255)
 
         test_generator = test_val_datagen.flow_from_directory(
@@ -109,7 +113,6 @@ def build_model():#train_generator, validation_generator):
         shuffle = False
         )
 
-
         # Log the number of training and validation samples
         mlflow.log_param("num_train_samples", train_generator.samples)
         mlflow.log_param("num_val_samples", test_generator.samples)
@@ -117,16 +120,6 @@ def build_model():#train_generator, validation_generator):
         # Train the model
         history = model.fit(train_generator, epochs=1, validation_data=test_generator)
         logger.info("Finished training model")
-        #input_example = tf.random.uniform(shape=(1, *img_shape)).numpy()
-        #output_example = model.predict(input_example) 
-        #signature =  mlflow.models.signature.infer_signature(input_example, output_example)
-
-        # mlflow.keras.log_model(
-        #     model,
-        #     artifact_path="Brain_Tumor_Classification_Model",
-        #     #input_example=input_example.numpy().tolist()
-        #     #signature=signature
-        # )
 
         # Log the training metrics
         for epoch in range(1):
@@ -138,5 +131,74 @@ def build_model():#train_generator, validation_generator):
     
     logger.info("Finished method: Build Model")
     return model
+
+def build_hp_model(hp):
+
+    load_dotenv()
+    keyfile_path = os.getenv('KEYFILE_PATH')
+
+    # Set the environment variable to point to the service account key file
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
+    os.environ['MLFLOW_GCS_BUCKET'] = os.getenv('MLFLOW_BUCKET')
+
+    mlflow.set_tracking_uri(os.getenv('MLFLOW_TRACKING_URL'))
+    mlflow.set_experiment(os.getenv('MLFLOW_EXPERIMENT'))
+
+    with mlflow.start_run(nested=True): 
+        model = Sequential()
+        model.add(tf.keras.layers.Input(shape=(224, 224, 3)))  # Correctly initialize the input shape
+
+        for i in range(1, 3):
+            filters = hp.Int(f'conv_{i}_filters', min_value=32, max_value=256, step=32)
+            model.add(Conv2D(
+                filters=filters,
+                kernel_size=(3, 3),
+                activation='relu',
+                padding='same'
+            ))
+            mlflow.log_param(f'conv_{i}_filters', filters)
+            model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Flatten())
+
+        num_dense_layers = hp.Int('num_dense_layers', 1, 3)
+        mlflow.log_param('num_dense_layers', num_dense_layers)
+
+        for i in range(num_dense_layers):
+            units = hp.Int(f'dense_{i}_units', min_value=128, max_value=512, step=128)
+            model.add(Dense(units=units, activation='relu'))
+            mlflow.log_param(f'dense_{i}_units', units)
+            if hp.Boolean(f'dropout_{i}'):
+                dropout_rate = hp.Float(f'dropout_{i}_rate', min_value=0.2, max_value=0.5, step=0.1)
+                model.add(Dropout(rate=dropout_rate))
+                mlflow.log_param(f'dropout_{i}_rate', dropout_rate)
+
+        model.add(Dense(4, activation='softmax'))
+
+        learning_rate = hp.Float('learning_rate', min_value=1e-4, max_value=1e-2, sampling='LOG')
+        model.compile(
+            optimizer=Adam(learning_rate=learning_rate),
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        mlflow.log_param('learning_rate', learning_rate)
+
+        tuner = kt.Hyperband(
+            build_model,
+            objective='val_accuracy',
+            max_epochs=10,
+            factor=3
+            # directory='./model_runs/',
+            # project_name='brain_tumor_classification'
+        )
+
+        with mlflow.start_run():
+            mlflow.keras.autolog()
+            tuner.search(preprocessing_for_training(), epochs=50, validation_data=preprocessing_for_testing(32))
+
+     
+
+        
+
 
 

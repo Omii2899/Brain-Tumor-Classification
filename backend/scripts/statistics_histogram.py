@@ -5,10 +5,14 @@ import numpy as np
 from scipy.stats import pearsonr
 from google.cloud import storage
 from scripts.logger import setup_logging
+import pickle
 
 BUCKET_NAME = "data-source-brain-tumor-classification"
 HISTOGRAMS_FILE = 'validation/histograms.pkl'
-keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+#keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+#keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+#keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+keyfile_path = './app/keys/tensile-topic-424308-d9-7418db5a1c90.json' 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
 
@@ -34,7 +38,7 @@ def validate_image(image):
     except Exception as e:
         setup_logging().error(f"Failed to load histograms: {e}")
         return False
-    
+    setup_logging().info(f"Image: {image}")  
     load_image = cv2.imread(image)
     gray_image = cv2.cvtColor(load_image, cv2.COLOR_BGR2GRAY)
     histogram = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
@@ -44,6 +48,6 @@ def validate_image(image):
         print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
             return True
-
+    setup_logging().info(f"Image validated: {correlation}")   
     setup_logging().info("Finished method: validate_image")   
     return False

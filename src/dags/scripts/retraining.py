@@ -1,14 +1,23 @@
 import os
 import mlflow
 from google.cloud import storage
-from backend.scripts.Model_Serve import Model_Server
+from scripts.Model_Serve import Model_Server
 from scripts.preprocessing import download_files
 from tensorflow.keras.optimizers import Adam
 from scripts.logger import setup_logging
 from scripts.preprocessing import preprocessing_for_testing, preprocessing_for_training
+from dotenv import load_dotenv
 
-def check_feedback_size_flag(bucket_name = "data-source-brain-tumor-classification", size_flag = 50):
-    
+
+
+def check_feedback_size_flag(bucket_name =os.getenv('BUCKET_NAME'), size_flag = 50):
+    load_dotenv()
+    keyfile_path = os.getenv('KEYFILE_PATH')
+    # Checking if file exists
+    if not os.path.exists(keyfile_path):
+        raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
+
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
     logger = setup_logging()
     logger.info("Started method: check_feedback_size_flag")
     storage_client = storage.Client()
@@ -30,7 +39,6 @@ def check_feedback_size_flag(bucket_name = "data-source-brain-tumor-classificati
         folder_file_count[folder_path] += 1
     
     for i in folder_file_count:
-        print()
         sum += folder_file_count[i]
 
     logger.info(f"Number of files in feedback:{sum}")

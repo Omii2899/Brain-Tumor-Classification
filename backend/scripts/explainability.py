@@ -17,7 +17,7 @@ def perturb_image(img,perturbation,segments):
   active_pixels = np.where(perturbation == 1)[0]
   mask = np.zeros(segments.shape)
   for active in active_pixels:
-      mask[segments == active] = 1
+    mask[segments == active] = 1
   perturbed_image = copy.deepcopy(img)
   perturbed_image = perturbed_image*mask[:,:,np.newaxis]
   return perturbed_image

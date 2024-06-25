@@ -5,7 +5,10 @@ import numpy as np
 from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from scripts.logger import setup_logging 
+#from logger import setup_logging 
 from google.cloud import storage
+from dotenv import load_dotenv
+
 
 def preprocessing_for_training():
 
@@ -70,7 +73,15 @@ def check_source():
      :param prefix: Prefix to check.
      :return: True if the prefix is a directory, False otherwise.
      """
-     bucket_name = "data-source-brain-tumor-classification"
+     load_dotenv()
+     keyfile_path = os.getenv('KEYFILE_PATH')
+     # Checking if file exists
+     if not os.path.exists(keyfile_path):
+          raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
+
+     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
+
+     bucket_name = os.getenv('BUCKET_NAME')
      logger = setup_logging()
      logger.info("Started Method: Check_Source")
      client = storage.Client()
@@ -87,9 +98,16 @@ def check_source():
 
 def download_files(flag):
      logger = setup_logging()
+     load_dotenv()
+     keyfile_path = os.getenv('KEYFILE_PATH')
+     # Checking if file exists
+     if not os.path.exists(keyfile_path):
+          raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
+
+     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
      logger.info("Method Started: Download_Files ")
      if flag :
-          bucket_name = "data-source-brain-tumor-classification"
+          bucket_name = os.getenv('BUCKET_NAME')
           destination_folder = ''
           storage_client = storage.Client()
           bucket = storage_client.get_bucket(bucket_name)
@@ -114,7 +132,7 @@ def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
 #     img_array = tf.keras.preprocessing.image.img_to_array(resized_img)
 #     img_array = np.expand_dims(img_array, 0)  # Create a batch
 #     img_array /= 255.0  # Normalize to [0, 1]
-
+    image_data = Image.open(image_data)  # Open the image file
     image = image_data.resize((224, 224))  # Resize the image
     image_array = np.array(image)
     image_array = image_array.astype('float32')  # Convert the image array to float32
