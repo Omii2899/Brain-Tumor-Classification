@@ -33,5 +33,5 @@ jobs:
           GOOGLE_PROJECT:  ${{ secrets.GOOGLEPROJECT }}
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
-          docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest .
+          docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest /src/ .
           docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest

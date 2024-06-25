@@ -5,7 +5,7 @@ on:
     paths:
     - 'backend/**'
     branches:
-    - Praneith10
+    - Praneith
 
 jobs:
   deploy:
