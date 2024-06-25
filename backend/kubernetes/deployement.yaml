@@ -10,21 +10,14 @@ spec:
   selector:
     matchLabels:
       app: backend-deployment
-  tempelate:
+  template:
     metadata:
       labels:
         app: backend-deployment
     spec:
       containers:
         - name: backend-container
-          image: 
-          imagePullPolicy: always
+          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:v1
+          imagePullPolicy: Always
           ports:
-            - containerPort:8080
-          resources:
-            requests:
-              memory:
-              cpu:
-            limits:
-              memory:
-              cpu: 
+            - containerPort: 8000
