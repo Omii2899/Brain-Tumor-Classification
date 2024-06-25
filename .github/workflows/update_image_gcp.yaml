@@ -5,7 +5,7 @@ on:
     paths:
     - 'src/**'
     branches:
-    - Praneith10
+    - main
 
 jobs:
   deploy:
