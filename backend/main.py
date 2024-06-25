@@ -11,7 +11,6 @@ import numpy as np
 from scripts.Model_Serve import Model_Server
 from scripts.statistics_histogram import validate_image
 
-
 app = FastAPI()
 
 ms = Model_Server(stage='Staging')

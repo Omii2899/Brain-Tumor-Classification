@@ -16,7 +16,8 @@ class Model_Server:
     def __init__(self, stage):
         setup_logging().info("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
-        keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+        #keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+        keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()
@@ -77,6 +78,7 @@ class Model_Server:
         setup_logging().info(f"Inference explained")
         return (explain_inference(self.img_array, self.loaded_model))
     
+    
     def generate_unique_filename(self, existing_filenames, extension='jpg'):
         while True:
             random_name = f"{uuid.uuid4().hex}.{extension}"
@@ -105,16 +107,3 @@ class Model_Server:
         elif prediction == 1: return 'meningioma'
         elif prediction == 2: return 'notumor'
         elif prediction == 3: return 'pituitary'
-        
-
-
-
-
-
-
-
-    
-
-
-
-    

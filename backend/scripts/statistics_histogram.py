@@ -9,6 +9,9 @@ import pickle
 
 BUCKET_NAME = "data-source-brain-tumor-classification"
 HISTOGRAMS_FILE = 'validation/histograms.pkl'
+#keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json' 
+#keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+#keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
 keyfile_path = './app/keys/tensile-topic-424308-d9-7418db5a1c90.json' 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
