@@ -5,7 +5,7 @@ on:
     paths:
     - 'backend/**'
     branches:
-    - Praneith10
+    - main
 
 jobs:
   deploy:
@@ -33,5 +33,6 @@ jobs:
           GOOGLE_PROJECT:  ${{ secrets.GOOGLEPROJECT }}
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
-          docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest -f backend/dockerfile .
+          cd backend
+          docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest .
           docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest

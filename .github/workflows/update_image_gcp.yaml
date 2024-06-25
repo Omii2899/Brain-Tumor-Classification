@@ -5,7 +5,7 @@ on:
     paths:
     - 'src/**'
     branches:
-    - Praneith10
+    - main
 
 jobs:
   deploy:
@@ -33,5 +33,6 @@ jobs:
           GOOGLE_PROJECT:  ${{ secrets.GOOGLEPROJECT }}
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
+          cd src
           docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest .
           docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-registry/dags:latest
