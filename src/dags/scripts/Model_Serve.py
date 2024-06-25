@@ -10,14 +10,15 @@ import os
 from PIL import Image
 from google.cloud import storage
 import uuid
+from dotenv import load_dotenv
 
 class Model_Server:
 
     def __init__(self, stage):
         setup_logging().info("Object Created: Model_Server")
+        load_dotenv()
         # Set the environment variable to point to the service account key file
-        keyfile_path = "../keys/tensile-topic-424308-d9-db4cf58ea349.json" 
-        print(keyfile_path)
+        keyfile_path = os.getenv('KEYFILE_PATH')
         # Checking if file exists
         if not os.path.exists(keyfile_path):
             raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
@@ -28,12 +29,13 @@ class Model_Server:
 
     def _loadmodel(self):
         
-        model_name = 'Model_1_50_50'
+        load_dotenv()
+        model_name = os.getenv('MODEL_NAME')
         setup_logging().info("Method started: loadmodel")
-        os.environ['MLFLOW_GCS_BUCKET'] = 'ml-flow-remote-tracker-bucket'
+        os.environ['MLFLOW_GCS_BUCKET'] = os.getenv('MLFLOW_BUCKET')
 
-        mlflow.set_tracking_uri("http://35.231.231.140:5000/")
-        mlflow.set_experiment("Brain-Tumor-Classification")
+        mlflow.set_tracking_uri(os.get('MLFLOW_TRACKING_URL'))
+        mlflow.set_experiment(os.get('MLFLOW_EXPERIMENT'))
 
         client = MlflowClient()
         setup_logging().info(f"Loading model : {model_name}, Stage : {self.stage}")
@@ -86,13 +88,13 @@ class Model_Server:
             if random_name not in existing_filenames:
                 return random_name
 
-    def get_existing_filenames(self, bucket_name="data-source-brain-tumor-classification"):
+    def get_existing_filenames(self, bucket_name=os.getenv('BUCKET_NAME')):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         blobs = bucket.list_blobs()
         return [blob.name for blob in blobs]
     
-    def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = "data-source-brain-tumor-classification"):
+    def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = os.getenv('BUCKET_NAME')):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
 
@@ -110,7 +112,7 @@ class Model_Server:
     #     blob = bucket.blob(blob_name)
     #     blob.delete()
 
-    def move_file_in_bucket(self, file_name, source_folder, destination_folder, bucket_name="data-source-brain-tumor-classification"):
+    def move_file_in_bucket(self, file_name, source_folder, destination_folder, bucket_name=os.getenv('BUCKET_NAME')):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
 
