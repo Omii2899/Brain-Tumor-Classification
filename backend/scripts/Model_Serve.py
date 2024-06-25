@@ -114,7 +114,7 @@ class Model_Server:
 
     def _prediction(self, pred):
         prediction = pred.argsort()[0, -5:][::-1][0]
-        if prediction == 0: return "giloma"
+        if prediction == 0: return "glioma"
         elif prediction == 1: return 'meningioma'
         elif prediction == 2: return 'notumor'
         elif prediction == 3: return 'pituitary'
