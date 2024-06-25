@@ -1,5 +1,6 @@
 import os
 from airflow import DAG
+from dotenv import load_dotenv, dotenv_values
 from datetime import datetime
 from google.cloud import storage
 from airflow import configuration as conf
@@ -13,11 +14,13 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from airflow.models import XCom
 
 
+load_dotenv()
+
 # Define function to notify failure or sucess via an email
 def notify_success(context):
     success_email = EmailOperator(
         task_id='success_email',
-        to='sharma.yasha@northeastern.edu',
+        to=os.getenv('EMAIL_TO'),
         subject='Success Notification from Airflow',
         html_content='<p>The dag tasks succeeded.</p>',
         dag=context['dag']
@@ -27,7 +30,7 @@ def notify_success(context):
 def notify_failure(context):
     failure_email = EmailOperator(
         task_id='failure_email',
-        to='sharma.yasha@northeastern.edu',
+        to=os.getenv('EMAIL_TO'),
         subject='Failure Notification from Airflow',
         html_content='<p>The dag tasks failed.</p>',
         dag=context['dag']
@@ -48,7 +51,7 @@ dag = DAG("data_pipeline",
 # Define the email task
 send_email = EmailOperator(
     task_id='send_email',
-    to='sharma.yasha@northeastern.edu',    # Email address of the recipient
+    to=os.getenv('EMAIL_TO'),    # Email address of the recipient
     subject='Notification from Airflow',
     html_content='<p>This is a notification email sent from Airflow indicating that the dag was triggered</p>',
     dag=dag,
