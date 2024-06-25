@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: streamlit-frontend
+  namespace: brain-tumor-classification
   name: frontend-deployment
   labels:
     app: frontend-deployment

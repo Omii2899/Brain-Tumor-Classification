@@ -7,7 +7,7 @@ import io
 import base64
 
 
-FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
+FASTAPI_BACKEND_ENDPOINT = "http://backend-service:8000"
 
 # Streamlit logger
 LOGGER = get_logger(__name__)
