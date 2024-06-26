@@ -1,10 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 from PIL import Image
-from mlflow.tracking import MlflowClient
-import mlflow
-import mlflow.pyfunc
-import os
 import io
 import base64
 import numpy as np
@@ -13,18 +9,19 @@ from scripts.statistics_histogram import validate_image
 from scripts.logger import setup_logging
 
 app = FastAPI()
-setup_logging().info("FastAPI application started")
+logger = setup_logging()
+logger.info("FastAPI application started")
 
 ms = Model_Server(stage='Staging')
 
 @app.get("/")
 def read_root():
-    setup_logging().info("Root endpoint accessed")
+    logger.info("Root endpoint accessed")
     return {"message": "Welcome to the Brain Tumor Classification API"}
 
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
-    setup_logging().info("Predict endpoint accessed")
+    logger.info("Predict endpoint accessed")
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
     existing_filenames = ms.get_existing_filenames()
@@ -34,7 +31,7 @@ async def predict(file: UploadFile = File(...)):
     is_valid = validate_image(temp_file_path)
 
     if not is_valid:
-        setup_logging().warning(f"Invalid image uploaded: {file_name}")
+        logger.warning(f"Invalid image uploaded: {file_name}")
         folder_name = 'InferenceLogs/ImageLogsForInvalidImages/'
         ms.uploadtobucket(temp_file_path, file_name, folder_name)
         return JSONResponse(content={"error": "Invalid Image. Please upload a correct brain MRI image."}, status_code=400)
@@ -55,7 +52,7 @@ async def predict(file: UploadFile = File(...)):
 
     inference_base64 = base64.b64encode(pil_inference_buffer.getvalue()).decode('utf-8')
     boundaries_base64 = base64.b64encode(pil_boundaries_buffer.getvalue()).decode('utf-8')
-    setup_logging().info(f"Prediction made for file: {file_name}, prediction: {prediction}")
+    logger.info(f"Prediction made for file: {file_name}, prediction: {prediction}")
     return JSONResponse(content={"Prediction": prediction, "Inference": inference_base64, "Boundaries": boundaries_base64, "FileName": file_name})
 
 @app.post("/feedback/")
@@ -64,6 +61,5 @@ async def feedback(file_name: str = Form(...), corrected_label: str = Form(...),
     feedback_folder = f'InferenceLogs/ImageLogsWithFeedback/{corrected_label}/'
 
     ms.move_file_in_bucket(file_name, original_folder, feedback_folder)
-    setup_logging().info(f"Feedback recorded for file: {file_name}, corrected label: {corrected_label}")
-    #return JSONResponse(content={"message": "Feedback recorded and image moved successfully."})
+    logger.info(f"Feedback recorded for file: {file_name}, corrected label: {corrected_label}")
     return JSONResponse(content={})

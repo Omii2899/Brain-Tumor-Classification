@@ -1,28 +1,27 @@
 import logging
 from datetime import datetime
 import os
+
 def setup_logging():
-    
-    # Set level to INFO to capture both info and error messages
+    # Create logger
     logger = logging.getLogger("unique")
+    logger.setLevel(logging.INFO)  # Set level to INFO to capture both info and error messages
 
-    # Get the current date and time
-    #now = datetime.now()
-    #logger.setLevel(logging.INFO) 
-    # Format the datetime object to a string
-    #timestamp_str = now.strftime("%Y_%m_%d_%H_%M_%S")
-    file_path = './logs.log'
+    # Create a file handler
+    file_handler = logging.FileHandler('logs.log')
+    file_handler.setLevel(logging.INFO)
 
-    #log_file_name = 'log_'+ timestamp_str
-    # Create handler for combined logging
-    combined_handler = logging.FileHandler(file_path)
-    combined_handler.setLevel(logging.INFO)  # Capture all logs above INFO level
+    # Create a console handler for output to the console
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
 
-    # Create formatter and add it to the handler
+    # Create a formatter and set it for both handlers
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    combined_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
 
-    # Add handler to the logger
-    logger.addHandler(combined_handler)
+    # Add the handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
     return logger
