@@ -5,7 +5,6 @@ from streamlit.logger import get_logger
 from PIL import Image
 import io
 import base64
-#from logger import setup_logging
 
 
 FASTAPI_BACKEND_ENDPOINT = "http://backend-service:8000"

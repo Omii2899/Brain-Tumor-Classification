@@ -4,6 +4,8 @@ import os
 from google.cloud import storage
 
 def setup_logging(log_content, log_level='INFO'):
+    # keyfile_path = "/app/keys/tensile-topic-424308-d9-17a256b9b21c.json"
+    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
     object_name = 'logs/log_backend.txt'
 
     storage_client = storage.Client()
