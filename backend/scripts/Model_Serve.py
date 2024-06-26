@@ -94,12 +94,11 @@ class Model_Server:
     def uploadtobucket(self, file_path, file_name, folder_name, bucket_name = "data-source-brain-tumor-classification"):
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
-
-        # Use the file name with folder path as the blob name
         blob_name = os.path.join(folder_name, file_name)
         blob = bucket.blob(blob_name)
-        blob.upload_from_string(file_path)
+        blob.upload_from_filename(file_path)
         return True
+        
 
     def move_file_in_bucket(self, file_name, source_folder, destination_folder, bucket_name="data-source-brain-tumor-classification"):
         storage_client = storage.Client()
