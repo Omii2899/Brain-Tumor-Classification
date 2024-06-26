@@ -5,15 +5,19 @@ from streamlit.logger import get_logger
 from PIL import Image
 import io
 import base64
+from logger import setup_logging
 
 
 FASTAPI_BACKEND_ENDPOINT = "http://backend-service:8000"
 
 # Streamlit logger
-LOGGER = get_logger(__name__)
+#LOGGER = get_logger(__name__)
 
 # Streamlit App
 def main():
+
+    logger = setup_logging()
+    logger.info("Streamlit application started")
 
     # Set the main dashboard page browser tab title and icon
     st.set_page_config(
@@ -43,8 +47,8 @@ def main():
             else:
                 st.warning("Problem connecting 😭")
         except requests.ConnectionError as ce:
-            LOGGER.error(ce)
-            LOGGER.error("Backend offline 😱")
+            logger.error(ce)
+            logger.error("Backend offline 😱")
             st.error("Backend offline 😱")
 
     st.write("# Brain Tumor Classification! 🧠")
@@ -69,6 +73,7 @@ def main():
     predict_button = st.button('Predict')
 
     if predict_button and uploaded_image:
+        logger.info("Predict button clicked and image uploaded")
         # Convert image to JPEG format in memory
         image_buffer = io.BytesIO()
         image.save(image_buffer, format='JPEG')
@@ -94,6 +99,7 @@ def main():
             }
             st.session_state["FEEDBACK_PROVIDED"] = None
             st.session_state["CORRECT_LABEL"] = None
+            logger.info(f"Prediction made for file: {file_name}, prediction: {prediction}")
 
         elif response.status_code == 400:
             result = response.json()
@@ -103,9 +109,11 @@ def main():
                 st.session_state["IS_IMAGE_FILE_AVAILABLE"] = False  # Reset image availability flag
                 #st.experimental_rerun()  # Rerun the app to allow re-uploading
                 st.rerun()  # Rerun
+                logger.warning("Invalid image uploaded for prediction")
             
         else:
             st.write("Error: Could not get a prediction.")
+            logger.error(f"Error in prediction request: {response.status_code}")
 
     # Display prediction results and feedback section if available
     if st.session_state["PREDICTION_RESULT"]:
@@ -123,11 +131,13 @@ def main():
             with col1:
                 if st.button('Yes'):
                     st.session_state["FEEDBACK_PROVIDED"] = "yes"
+                    logger.info("User is happy with the prediction")
                     #st.experimental_rerun()
                     st.rerun()  # Rerun
             with col2:
                 if st.button('No'):
                     st.session_state["FEEDBACK_PROVIDED"] = "no"
+                    logger.info("User is not happy with the prediction")
                     #st.experimental_rerun()
                     st.rerun()  # Rerun
 
@@ -139,6 +149,7 @@ def main():
                 st.session_state["PREDICTION_RESULT"] = None  # Clear prediction results
                 st.session_state["FEEDBACK_PROVIDED"] = None  # Clear feedback state
                 st.session_state["CORRECT_LABEL"] = None  # Clear correct label
+                logger.info("User exited after providing positive feedback")
                 #st.experimental_rerun()  # Rerun the app to allow re-uploading
                 st.rerun()  # Rerun
 
@@ -161,6 +172,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    logger.info(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col2:
                 if st.button('Meningioma', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -178,6 +190,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    logger.info(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col3:
                 if st.button('No Tumor', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -195,6 +208,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    logger.info(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col4:
                 if st.button('Pituitary', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -212,6 +226,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    logger.info(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             exit_button = st.button('Exit')
 
@@ -221,6 +236,7 @@ def main():
                 st.session_state["FEEDBACK_PROVIDED"] = None  # Clear feedback state
                 st.session_state["CORRECT_LABEL"] = None  # Clear correct label
                 #st.experimental_rerun()  # Rerun
+                logger.info("User exited")
                 st.rerun()  # Rerun
 
         if st.session_state["CORRECT_LABEL"]:
