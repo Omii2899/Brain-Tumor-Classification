@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: streamlit-frontend
+  namespace: brain-tumor-classification
   name: frontend-deployment
   labels:
     app: frontend-deployment
@@ -17,7 +17,9 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image:                       
+          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-frontend/frontend:v1 
           imagePullPolicy: Always
           ports:
             - containerPort: 8501
+      # imagePullSecrets:
+      # - name: artifact-registry-secret

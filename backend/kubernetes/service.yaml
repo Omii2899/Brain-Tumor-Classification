@@ -1,4 +1,4 @@
-apiVersion:
+apiVersion: v1
 kind: Service
 metadata:
   namespace: brain-tumor-classification
@@ -8,5 +8,5 @@ spec:
     app: backend-deployment
   ports:
     - protocol: TCP
-      ports: 80
-      targetPort: 8080
+      port: 8000         # Corrected field name to 'port'
+      targetPort: 8000
