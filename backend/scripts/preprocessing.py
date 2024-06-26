@@ -10,11 +10,10 @@ from google.cloud import storage
 def preprocessing_for_training():
 
     # Invoking the global logger method
-    logger = setup_logging()
-    logger.info("Started method: preprocessing_for_training")
+    setup_logging("Started method: preprocessing_for_training")
 
     path = './data/Training/'
-    logger.info(f"Image path: {path}")
+    setup_logging(f"Image path: {path}")
     
     train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
         rescale=1.0/255,           # Normalize pixel values to [0, 1]
@@ -36,17 +35,16 @@ def preprocessing_for_training():
     seed = 42
     )
 
-    logger.info("Finished method: preprocessing_for_training")
+    setup_logging("Finished method: preprocessing_for_training")
 #     kwargs['ti'].xcom_push(key = 'train_generator', value = train_generator)
     #return train_generator
 
 def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
      # Invoking the global logger method
-     logger = setup_logging()
-     logger.info("Started method: preprocessing_for_testing_inference")
-     logger.info(f"Image path: {path}")
-     logger.info(f'Batch size: {batchSize}')
+     setup_logging("Started method: preprocessing_for_testing_inference")
+     setup_logging(f"Image path: {path}")
+     setup_logging(f'Batch size: {batchSize}')
 
      # Normalize pixel values to [0, 1]
      test_val_datagen = ImageDataGenerator(rescale=1.0/255)
@@ -59,7 +57,7 @@ def preprocessing_for_testing(batchSize, path= './data/Testing/'):
      shuffle = False
      )
 
-     logger.info("Finished method: preprocessing_for_testing_inference")
+     setup_logging("Finished method: preprocessing_for_testing_inference")
      #return test_generator
 
 def check_source():
@@ -71,23 +69,22 @@ def check_source():
      :return: True if the prefix is a directory, False otherwise.
      """
      bucket_name = "data-source-brain-tumor-classification"
-     logger = setup_logging()
-     logger.info("Started Method: Check_Source")
+     setup_logging("Started Method: Check_Source")
      client = storage.Client()
      bucket = client.bucket(bucket_name)
 
      blobs = list(bucket.list_blobs())
 
      if len(blobs)>3:
-          logger.info("Finished Method - Source Found")
+          setup_logging("Finished Method - Source Found")
           return True
-     logger.warning("Finished Method - Source Not Found")
+     setup_logging("Finished Method - Source Not Found", log_level='ERROR')
      return False
 
 
 def download_files(flag):
-     logger = setup_logging()
-     logger.info("Method Started: Download_Files ")
+
+     setup_logging("Method Started: Download_Files ")
      if flag :
           bucket_name = "data-source-brain-tumor-classification"
           destination_folder = ''
@@ -103,17 +100,16 @@ def download_files(flag):
                     os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)
                     # print(f"{blob.name} - {destination_file_name}")
                     blob.download_to_filename(destination_file_name)
-          logger.info("Method Finished - Files Downloaded")
+          setup_logging("Method Finished - Files Downloaded")
+          
+# Method to load and process image as an array
+def load_and_preprocess_image(image_data, img_size=(224, 224)):
 
-
-#Method to load and process image as an array
-def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
-    image_data = Image.open(image_data)
-    image = image_data.resize((224, 224))  # Resize the image
+    setup_logging("Method Started: Load and Preprocess_image ")
+    image = Image.open(image_data).convert("RGB")  # Ensure the image is in RGB mode
+    image = image.resize(img_size)  # Resize the image
     image_array = np.array(image)
-    image_array = image_array.astype('float32')  # Convert the image array to float32
-    image_array = image_array * (1.0 / 255)  # Normalize the pixel values
+    image_array = image_array.astype('float32') / 255.0  # Normalize the pixel values
     image_array = np.expand_dims(image_array, axis=0)  # Expand dimensions to match model input shape
 
     return image_array
-

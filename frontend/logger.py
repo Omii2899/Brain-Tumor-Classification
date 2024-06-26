@@ -4,14 +4,14 @@ import os
 from google.cloud import storage
 
 def setup_logging(log_content, log_level='INFO'):
-    object_name = 'logs/log_backend.txt'
+    object_name = 'logs/log_frontend.txt'
 
     storage_client = storage.Client()
     bucket = storage_client.bucket('data-source-brain-tumor-classification')
     blob = bucket.get_blob(object_name)
 
     if not blob:
-        # Create the file if it doesn't exist
+    # Create the file if it doesn't exist
         blob = bucket.blob(object_name)
 
     dataT=""

@@ -5,11 +5,13 @@ from streamlit.logger import get_logger
 from PIL import Image
 import io
 import base64
+#from logger import setup_logging
 
-FASTAPI_BACKEND_ENDPOINT = "http://localhost:8000"
+
+FASTAPI_BACKEND_ENDPOINT = "http://backend-service:8000"
 
 # Streamlit logger
-LOGGER = get_logger(__name__)
+#LOGGER = get_logger(__name__)
 
 # Streamlit App
 def main():
@@ -41,8 +43,6 @@ def main():
             else:
                 st.warning("Problem connecting 😭")
         except requests.ConnectionError as ce:
-            LOGGER.error(ce)
-            LOGGER.error("Backend offline 😱")
             st.error("Backend offline 😱")
 
     st.write("# Brain Tumor Classification! 🧠")
@@ -137,12 +137,10 @@ def main():
             with col1:
                 if st.button('Yes'):
                     st.session_state["FEEDBACK_PROVIDED"] = "yes"
-                    #st.experimental_rerun()
                     st.rerun()  # Rerun
             with col2:
                 if st.button('No'):
                     st.session_state["FEEDBACK_PROVIDED"] = "no"
-                    #st.experimental_rerun()
                     st.rerun()  # Rerun
 
         elif st.session_state["FEEDBACK_PROVIDED"] == "yes":
@@ -175,6 +173,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    #logger.info(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col2:
                 if st.button('Meningioma', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -192,6 +191,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    #setup_logging(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col3:
                 if st.button('No Tumor', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -209,6 +209,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    #setup_logging(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             with col4:
                 if st.button('Pituitary', disabled=st.session_state["CORRECT_LABEL"] is not None):
@@ -226,6 +227,7 @@ def main():
                     # else:
                     #     st.error("There was an error recording your feedback. Please try again.")
                     #st.experimental_rerun()
+                    #setup_logging(f"Feedback provided: {st.session_state['CORRECT_LABEL']} for file: {st.session_state['PREDICTION_RESULT']['file_name']}")
                     st.rerun()  # Rerun
             exit_button = st.button('Exit')
 
@@ -235,6 +237,7 @@ def main():
                 st.session_state["FEEDBACK_PROVIDED"] = None  # Clear feedback state
                 st.session_state["CORRECT_LABEL"] = None  # Clear correct label
                 #st.experimental_rerun()  # Rerun
+                #setup_logging("User exited")
                 st.rerun()  # Rerun
 
         if st.session_state["CORRECT_LABEL"]:
