@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-frontend/frontend:v1 
+          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-frontend/frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8501
