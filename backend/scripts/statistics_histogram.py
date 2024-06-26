@@ -24,7 +24,7 @@ def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
 
     blob.download_to_filename(destination_file_name)
 
-    setup_logging().info(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
+    setup_logging(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
 
 
 def validate_image(image):
@@ -34,11 +34,11 @@ def validate_image(image):
         download_from_gcs(BUCKET_NAME, HISTOGRAMS_FILE, local_histogram_path)
         with open(local_histogram_path, 'rb') as f:
             histograms = pickle.load(f)
-        setup_logging().info("Loaded histograms from histograms.pkl")
+        setup_logging("Loaded histograms from histograms.pkl")
     except Exception as e:
-        setup_logging().error(f"Failed to load histograms: {e}")
+        setup_logging(f"Failed to load histograms: {e}", log_level='ERROR')
         return False
-    setup_logging().info(f"Image: {image}")  
+    setup_logging(f"Image: {image}")  
     load_image = cv2.imread(image)
     gray_image = cv2.cvtColor(load_image, cv2.COLOR_BGR2GRAY)
     histogram = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
@@ -48,6 +48,6 @@ def validate_image(image):
         print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
             return True
-    setup_logging().info(f"Image validated: {correlation}")   
-    setup_logging().info("Finished method: validate_image")   
+    setup_logging(f"Image validated: {correlation}")   
+    setup_logging("Finished method: validate_image")   
     return False

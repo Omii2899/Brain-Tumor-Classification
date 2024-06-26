@@ -19,8 +19,8 @@ def build_model():#train_generator, validation_generator):
 
     load_dotenv()
     
-    logger = setup_logging()
-    logger.info("Started method: Building Model")
+    #logger = setup_logging()
+    setup_logging("Started method: Building Model")
     #keyfile_path = 'keys/tensile-topic-424308-d9-7418db5a1c90.json'  # change as per your keyfile path
     keyfile_path = os.getenv('KEYFILE_PATH')
 
@@ -119,7 +119,7 @@ def build_model():#train_generator, validation_generator):
 
         # Train the model
         history = model.fit(train_generator, epochs=1, validation_data=test_generator)
-        logger.info("Finished training model")
+        setup_logging("Finished training model")
 
         # Log the training metrics
         for epoch in range(1):
@@ -129,7 +129,7 @@ def build_model():#train_generator, validation_generator):
             mlflow.log_metric("val_recall", history.history['val_recall'][epoch], step=epoch)
         
     
-    logger.info("Finished method: Build Model")
+    setup_logging("Finished method: Build Model")
     return model
 
 def build_hp_model(hp):
