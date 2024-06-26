@@ -12,13 +12,13 @@ def setup_logging(log_content, log_level='INFO'):
     bucket = storage_client.bucket(os.getenv('BUCKET_NAME'))
     blob = bucket.get_blob(object_name)
 
+    if not blob:
+    # Create the file if it doesn't exist
+        blob = bucket.blob(object_name)
+
     dataT=""
     with bucket.blob(object_name).open('r') as f:
         dataT=f.read()
-
-    if not blob:
-        # Create the file if it doesn't exist
-        blob = bucket.blob(object_name)
 
     # Generate current timestamp
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
