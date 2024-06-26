@@ -65,5 +65,4 @@ async def feedback(file_name: str = Form(...), corrected_label: str = Form(...),
 
     ms.move_file_in_bucket(file_name, original_folder, feedback_folder)
     setup_logging(f"Feedback recorded for file: {file_name}, corrected label: {corrected_label}")
-    #return JSONResponse(content={"message": "Feedback recorded and image moved successfully."})
     return JSONResponse(content={})
