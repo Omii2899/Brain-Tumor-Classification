@@ -106,14 +106,22 @@ def download_files(flag):
           logger.info("Method Finished - Files Downloaded")
 
 
-#Method to load and process image as an array
-def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
-    image_data = Image.open(image_data)
-    image = image_data.resize((224, 224))  # Resize the image
+# #Method to load and process image as an array
+# def load_and_preprocess_image(image_data, img_size=(224, 224, 3)):
+#     image_data = Image.open(image_data)
+#     image = image_data.resize((224, 224))  # Resize the image
+#     image_array = np.array(image)
+#     image_array = image_array.astype('float32')  # Convert the image array to float32
+#     image_array = image_array * (1.0 / 255)  # Normalize the pixel values
+#     image_array = np.expand_dims(image_array, axis=0)  # Expand dimensions to match model input shape
+
+#     return image_array
+# Method to load and process image as an array
+def load_and_preprocess_image(image_data, img_size=(224, 224)):
+    image = Image.open(image_data).convert("RGB")  # Ensure the image is in RGB mode
+    image = image.resize(img_size)  # Resize the image
     image_array = np.array(image)
-    image_array = image_array.astype('float32')  # Convert the image array to float32
-    image_array = image_array * (1.0 / 255)  # Normalize the pixel values
+    image_array = image_array.astype('float32') / 255.0  # Normalize the pixel values
     image_array = np.expand_dims(image_array, axis=0)  # Expand dimensions to match model input shape
 
     return image_array
-
