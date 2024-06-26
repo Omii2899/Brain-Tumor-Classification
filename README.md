@@ -133,7 +133,7 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 
    - `statistics.py`: Conducts statistical analysis on the dataset, calculating various descriptive statistics and generating insights about the data distribution and relationships between features.
 
-![picture alt](assets/metrics.jpeg)
+![picture alt](assets/metrics.jpg)
    
 5. **Machine Learning Experiment Tracking**
 
@@ -236,7 +236,7 @@ python src/dags/datapipeline.py
 ![picture alt](assets/GCP-buckets.jpg)
 
 ### 2. Data buckets
-![picture alt](assets/data-bucket.jpg)
+![picture alt](assets/data-bucket.png)
 
 - **/data**: This directory contains the dataset used for training and testing the ML model.
 - **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
@@ -269,8 +269,11 @@ python src/dags/datapipeline.py
 
 ![picture alt](assets/ui-1.png)
 
-Disclaimer
-Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
+
+## **Disclaimer**
+
+**Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.**
+
 
 ## Contributors
 
