@@ -23,7 +23,7 @@ All data used are sourced from publicly available datasets with proper usage per
 
 ## Project Workflow
 
-![picture alt](assets/model-architecture.jpeg)
+![picture alt](assets/model-architecture.png)
 
 ## Prerequisites
 
@@ -133,6 +133,8 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 
    - `statistics.py`: Conducts statistical analysis on the dataset, calculating various descriptive statistics and generating insights about the data distribution and relationships between features.
 
+![picture alt](assets/metrics.jpeg)
+   
 5. **Machine Learning Experiment Tracking**
 
    - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.
@@ -141,26 +143,29 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 
 | Variable Name            | Role    | DType    | Description                                                                        |
 |--------------------------|---------|----------|------------------------------------------------------------------------------------|
-| Index                    | ID      | int64    |                                                                                    |
-| From_ID                  | ID      | int64    | Hexadecimal code for account where transaction originates                          |
-| To_ID                    | ID      | int64    | Hexadecimal code for account where transaction ends                                |
-| Timestamp                | ID      | float64  |                                                                                    |
-| Amount_Paid              | Feature | float64  | Monetary amount paid (in currency units of the next column)                        |
-| Payment_Currency         | Feature | int64    | Currency such as dollars, euros, etc of From account                               |
-| Amount_Received          | Feature | float64  | Monetary amount received in From account (in currency units of the next column)    |
-| Receiving_Currency       | Feature | int64    | Monetary amount received in From account (in currency units of the next column)    |
-| Payment_Format           | Feature | int64    | How the transaction was conducted, e.g. cheque, ACH, wire, credit cards, etc.      |
-| Is_Laundering            | Feature | int64    | Binary Value: 1 if it is laundering, 0 if not.                                     |
-| from_degree              | Feature | int64    | Number of edges incident on a node originating from it.                            |
-| from_in_degree           | Feature | int64    | The number of edges pointing towards a node, indicating incoming edges to the node.|
-| from_out_degree          | Feature | int64    | The number of edges originating from a node, indicating outgoing edges from the node.|
-| from_clustering_coeff    | Feature | float64  | Measures the degree to which nodes in a graph tend to cluster together.            |
-| from_degree_centrality   | Feature | float64  | Measures the importance of a node in a graph based on the number of edges incident upon it.|
-| to_degree                | Feature | int64    | Similar to from_degree, but concerning the target node of an edge.                 |
-| to_in_degree             | Feature | int64    | The number of edges pointing towards a node, but specifically for the target node of an edge.|
-| to_out_degree            | Feature | int64    | The number of edges originating from a node, but specifically for the target node of an edge.|
-| to_clustering_coeff      | Feature | float64  | Similar to from_clustering_coeff, but concerning the target node of an edge.       |
-| to_degree_centrality     | Feature | float64  | Similar to from_degree_centrality, but concerning the target node of an edge.      |
+| Image_ID                 | ID      | int64    | Unique identifier for each MRI image                                               |
+| Acquisition_Date         | ID      | datetime | Date when the MRI image was acquired                                               |
+| Tumor_Type               | Target  | int64    | Category of tumor: 0 - No Tumor, 1 - Glioma, 2 - Meningioma, 3 - Pituitary         |
+| Image_Pixels             | Feature | ndarray  | Pixel values of the MRI image                                                      |
+| Image_Resolution         | Feature | int64    | Resolution of the MRI image                                                        |
+| Image_Width              | Feature | int64    | Width of the MRI image in pixels                                                   |
+| Image_Height             | Feature | int64    | Height of the MRI image in pixels                                                  |
+| Pixel_Spacing            | Feature | float64  | Spacing between pixels in the MRI image                                            |
+| Augmented                | Feature | bool     | Whether the image was augmented (True/False)                                       |
+| Augmentation_Type        | Feature | int64    | Type of augmentation applied (if any): 0 - None, 1 - Rotation, 2 - Flipping, etc.  |
+| Brain_Region             | Feature | int64    | Region of the brain shown in the MRI image                                         |
+| MRI_Machine_Type         | Feature | int64    | Type of MRI machine used for imaging                                               |
+| Image_Contrast           | Feature | float64  | Contrast level of the MRI image                                                    |
+| Noise_Level              | Feature | float64  | Noise level in the MRI image                                                       |
+| Preprocessing_Steps      | Feature | object   | List of preprocessing steps applied to the image                                   |
+| Is_Corrupted             | Feature | bool     | Whether the image is corrupted (True/False)                                        |
+| Tumor_Size               | Feature | float64  | Size of the tumor detected in the MRI image (if any)                               |
+| Diagnosis_Confirmed      | Feature | bool     | Whether the diagnosis has been confirmed by a professional (True/False)            |
+| Diagnosis_Date           | Feature | datetime | Date when the diagnosis was confirmed                                              |
+
+### Description
+
+This data card provides an overview of the variables present in the dataset after preprocessing and feature engineering. Each variable has a specific role, data type, and description to help understand its significance in the context of brain tumor detection and classification using MRI images. This comprehensive data card can be included in the README file to provide clarity on the dataset's structure and the preprocessing steps applied. This dataset only includes image-related information and does not contain any personal information about patients.
 
 ## Model Train and Inference
 
@@ -203,7 +208,7 @@ To run the pipeline, you can use Docker for containerization.
 docker build -t image-name:tag-name .
 ```
 2. Verify the image 
-```sh
+```
 docker images
 ```
 
@@ -254,9 +259,18 @@ python src/dags/datapipeline.py
 #### 2. Model Retraining pipeline
 ![picture alt](assets/retrain-pipeline.jpg)
 
+1. **check_source_flag**: Checks if there are more than 50 wrongly predicted images in the bucket.
+2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
+3. **flag_true**: Proceeds to model retraining if there are more than 50 wrongly predicted images.
+4. **retrain_model**: Initiates the re-training of the model with updated data.
+5. **send_email**: Sends an email notification once model retraining is completed.
+
 ## Application Interface
 
 ![picture alt](assets/ui-1.png)
+
+Disclaimer
+Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
 
 ## Contributors
 
