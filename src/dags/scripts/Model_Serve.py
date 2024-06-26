@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 class Model_Server:
 
     def __init__(self, stage):
-        setup_logging().info("Object Created: Model_Server")
+        setup_logging("Object Created: Model_Server")
         load_dotenv()
         # Set the environment variable to point to the service account key file
         keyfile_path = os.getenv('KEYFILE_PATH')
@@ -31,14 +31,14 @@ class Model_Server:
         
         load_dotenv()
         model_name = os.getenv('MODEL_NAME')
-        setup_logging().info("Method started: loadmodel")
+        setup_logging("Method started: loadmodel")
         os.environ['MLFLOW_GCS_BUCKET'] = os.getenv('MLFLOW_BUCKET')
 
-        mlflow.set_tracking_uri(os.get('MLFLOW_TRACKING_URL'))
-        mlflow.set_experiment(os.get('MLFLOW_EXPERIMENT'))
+        mlflow.set_tracking_uri(os.getenv('MLFLOW_TRACKING_URL'))
+        mlflow.set_experiment(os.getenv('MLFLOW_EXPERIMENT'))
 
         client = MlflowClient()
-        setup_logging().info(f"Loading model : {model_name}, Stage : {self.stage}")
+        setup_logging(f"Loading model : {model_name}, Stage : {self.stage}")
         model_metadata = client.get_latest_versions(model_name, stages=[self.stage])
 
         if len(model_metadata)>1:
@@ -59,20 +59,20 @@ class Model_Server:
         else:
             logged_model = f'runs:/{model_metadata[0].run_id}/model'
 
-        setup_logging().info(f"Loading model: {logged_model}")
+        setup_logging(f"Loading model: {logged_model}")
 
-        # Load model as a PyFuncModel.
+        # Load model
         self.loaded_model = mlflow.pyfunc.load_model(logged_model)
-        setup_logging().info("Method finished: loadmodel")
+        setup_logging("Method finished: loadmodel")
         
 
     def serve_model(self, img_path):
 
-        setup_logging().info(f"Serving model --> img:{img_path}")
+        setup_logging(f"Serving model --> img:{img_path}")
         # Load and make prediction
         self.img_array = load_and_preprocess_image(img_path)
         preds = self.loaded_model.predict(self.img_array)
-        setup_logging().info(f"Serving model --> img:{img_path};prediction:{preds}")
+        setup_logging(f"Serving model --> img:{img_path};prediction:{preds}")
         # Extract class info and create folder path to upload
         prediction_class = self._prediction(pred=preds)
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'

@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from scripts.logger import setup_logging 
+from scripts.logger import setup_logging
 #from logger import setup_logging 
 from google.cloud import storage
 from dotenv import load_dotenv
@@ -13,11 +13,11 @@ from dotenv import load_dotenv
 def preprocessing_for_training():
 
     # Invoking the global logger method
-    logger = setup_logging()
-    logger.info("Started method: preprocessing_for_training")
+    #logger = setup_logging()
+    setup_logging("Started method: preprocessing_for_training")
 
     path = './data/Training/'
-    logger.info(f"Image path: {path}")
+    setup_logging(f"Image path: {path}")
     
     train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
         rescale=1.0/255,           # Normalize pixel values to [0, 1]
@@ -39,17 +39,17 @@ def preprocessing_for_training():
     seed = 42
     )
 
-    logger.info("Finished method: preprocessing_for_training")
+    setup_logging("Finished method: preprocessing_for_training")
 #     kwargs['ti'].xcom_push(key = 'train_generator', value = train_generator)
     #return train_generator
 
 def preprocessing_for_testing(batchSize, path= './data/Testing/'):
 
      # Invoking the global logger method
-     logger = setup_logging()
-     logger.info("Started method: preprocessing_for_testing_inference")
-     logger.info(f"Image path: {path}")
-     logger.info(f'Batch size: {batchSize}')
+     #logger = setup_logging()
+     setup_logging("Started method: preprocessing_for_testing_inference")
+     setup_logging(f"Image path: {path}")
+     setup_logging(f'Batch size: {batchSize}')
 
      # Normalize pixel values to [0, 1]
      test_val_datagen = ImageDataGenerator(rescale=1.0/255)
@@ -62,7 +62,7 @@ def preprocessing_for_testing(batchSize, path= './data/Testing/'):
      shuffle = False
      )
 
-     logger.info("Finished method: preprocessing_for_testing_inference")
+     setup_logging("Finished method: preprocessing_for_testing_inference")
      #return test_generator
 
 def check_source():
@@ -82,22 +82,22 @@ def check_source():
      os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
 
      bucket_name = os.getenv('BUCKET_NAME')
-     logger = setup_logging()
-     logger.info("Started Method: Check_Source")
+     #logger = setup_logging()
+     setup_logging("Started Method: Check_Source")
      client = storage.Client()
      bucket = client.bucket(bucket_name)
 
      blobs = list(bucket.list_blobs())
 
      if len(blobs)>3:
-          logger.info("Finished Method - Source Found")
+          setup_logging("Finished Method - Source Found")
           return True
-     logger.warning("Finished Method - Source Not Found")
+     setup_logging("Finished Method - Source Not Found", log_level = 'WARNING')
      return False
 
 
 def download_files(flag):
-     logger = setup_logging()
+     #logger = setup_logging()
      load_dotenv()
      keyfile_path = os.getenv('KEYFILE_PATH')
      # Checking if file exists
@@ -105,7 +105,7 @@ def download_files(flag):
           raise FileNotFoundError(f"The file '{keyfile_path}' does not exist. Please check the path.")
 
      os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
-     logger.info("Method Started: Download_Files ")
+     setup_logging("Method Started: Download_Files ")
      if flag :
           bucket_name = os.getenv('BUCKET_NAME')
           destination_folder = ''
@@ -121,7 +121,7 @@ def download_files(flag):
                     os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)
                     # print(f"{blob.name} - {destination_file_name}")
                     blob.download_to_filename(destination_file_name)
-          logger.info("Method Finished - Files Downloaded")
+          setup_logging("Method Finished - Files Downloaded")
 
 
 #Method to load and process image as an array
