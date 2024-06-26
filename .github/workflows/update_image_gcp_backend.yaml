@@ -35,5 +35,4 @@ jobs:
           gcloud auth configure-docker us-east1-docker.pkg.dev
           cd backend
           docker buildx build --platform linux/amd64 -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest .
-# docker build -t us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest .
           docker push us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest
