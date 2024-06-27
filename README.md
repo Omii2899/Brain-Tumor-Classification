@@ -23,6 +23,7 @@ This project is designed to develop, deploy, and maintain a machine learning mod
 ## Introduction
 
 Brain tumors are one of the more common types of cancer, with approximately 24,810 adults in the United States diagnosed in 2023. The complexity and variability of brain tumors make accurate diagnosis challenging. Traditional methods rely on MRI, CT, and PET imaging techniques to indicate the presence of a tumor, with further classification often requiring invasive procedures such as stereotactic needle biopsy or open biopsy (craniotomy). These techniques are costly, time-consuming, and carry risks such as infection and other surgical complications.
+
 <br> Motivated by these challenges, we chose this topic for our MLOps project. By leveraging the principles of MLOps, we have developed an end-to-end ML pipeline for automated brain tumor detection. Our goal is to enhance the accuracy and efficiency of non-invasive imaging techniques, potentially reducing the need for invasive procedures. This approach aims to provide scalable, reliable, and timely diagnostic support.
 
 ## Dataset Information
@@ -169,12 +170,14 @@ If the performance has improved we can proceed by registering the model and depl
 
 Below is the interface of our brain tumor classification system, where users can upload MRI images in JPEG or JPG format. If a non-brain MRI image is uploaded, the UI will reject it. For valid images, the system provides a prediction, and users can submit feedback if they find the prediction unsatisfactory or incorrect. This feedback will be stored to improve our system.
 
+ > [!IMPORTANT]
+ > Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
+
 ![picture alt](assets/UI-1.png)
 ![picture alt](assets/UI-2.png)
 ![picture alt](assets/UI-3.png)
 
- > [!IMPORTANT]
- > Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
+
 
 
 ## Contributors
