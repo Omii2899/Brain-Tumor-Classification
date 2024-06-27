@@ -76,6 +76,65 @@ dvc pull
 ### 5. Add the Key File:
 You need to add the key file in src/keys folder. For security purposes, we have not included this file. To obtain this file, please contact [Aadarsh](mailto:siddha.a@northeastern.edu)  
 
+## Model Train and Inference
+
+1. **Training and Inference**
+
+   - `build.py`: Initializes the Vertex AI platform, trains the model, and saves it to a bucket.
+   - `inference.py`: Utilizes the predict function for inference.
+
+2. **Docker Image Creation for Training and Serving**
+
+   - Setup Docker, create train and serve docker images, push to Artifact Repository:
+     ```sh
+     gcloud auth configure-docker us-central1-docker.pkg.dev
+     ```
+
+     **File paths**: `src/trainer/Dockerfile` and `src/serve/Dockerfile`
+
+     **Commands**:
+     ```sh
+     docker buildx build --platform linux/amd64 -f trainer/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1 . --load
+     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1
+
+     docker buildx build --platform linux/amd64 -f serve/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/serve:v1 . --load
+     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/
+
+serve:v1
+     ```
+
+## Running the data pipeline
+
+To run the pipeline, you can use Docker for containerization.
+
+1. Build the Docker Image
+```sh
+docker build -t image-name:tag-name .
+```
+2. Verify the image 
+```
+docker images
+```
+
+3. Run the built image
+```sh
+docker run -it --rm -p 8080:8080 image-name:tag-name
+```
+
+The application should now be running and accessible at [http://localhost:8080](http://localhost:8080).
+
+Use the below credentials:
+- **User**: mlopsproject
+- **Password**: admin
+
+*Note: If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with `sudo`.*
+
+4. Trigger the Airflow UI
+```sh
+python src/dags/datapipeline.py
+```
+
+
 ## Description of Files and Folders
 #### Project Structure:
 ```plaintext
@@ -141,68 +200,6 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 
 This data card provides an overview of the variables present in the dataset after preprocessing and feature engineering. Each variable has a specific role, data type, and description to help understand its significance in the context of brain tumor detection and classification using MRI images. This comprehensive data card can be included in the README file to provide clarity on the dataset's structure and the preprocessing steps applied. This dataset only includes image-related information and does not contain any personal information about patients.
 
-## Model Train and Inference
-
-1. **Training and Inference**
-
-   - `build.py`: Initializes the Vertex AI platform, trains the model, and saves it to a bucket.
-   - `inference.py`: Utilizes the predict function for inference.
-
-2. **Docker Image Creation for Training and Serving**
-
-   - Setup Docker, create train and serve docker images, push to Artifact Repository:
-     ```sh
-     gcloud auth configure-docker us-central1-docker.pkg.dev
-     ```
-
-     **File paths**: `src/trainer/Dockerfile` and `src/serve/Dockerfile`
-
-     **Commands**:
-     ```sh
-     docker buildx build --platform linux/amd64 -f trainer/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1 . --load
-     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1
-
-     docker buildx build --platform linux/amd64 -f serve/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/serve:v1 . --load
-     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/
-
-serve:v1
-     ```
-
-## Model Versioning
-
-- Model Registry of Vertex AI does the model versioning.
-- Artifact Registry versions the docker images.
-
-## Running the data pipeline
-
-To run the pipeline, you can use Docker for containerization.
-
-1. Build the Docker Image
-```sh
-docker build -t image-name:tag-name .
-```
-2. Verify the image 
-```
-docker images
-```
-
-3. Run the built image
-```sh
-docker run -it --rm -p 8080:8080 image-name:tag-name
-```
-
-The application should now be running and accessible at [http://localhost:8080](http://localhost:8080).
-
-Use the below credentials:
-- **User**: mlopsproject
-- **Password**: admin
-
-*Note: If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with `sudo`.*
-
-4. Trigger the Airflow UI
-```sh
-python src/dags/datapipeline.py
-```
 
 ## Data storage and Model Registry:
 
@@ -216,6 +213,7 @@ python src/dags/datapipeline.py
 - **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
   - **ImageLogs/**: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
   - **ImageLogsWithFeedback/**: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
+  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI 
 
 ### DAG:
 
@@ -261,4 +259,3 @@ If the performance has improved we can proceed by registering the model and depl
 [Praneith Ranganath](https://github.com/Praneith)  
 [Shaun Kirtan](https://github.com/)  
 [Yashasvi Sharma](https://github.com/yashasvi14)
-```git 
