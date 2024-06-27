@@ -65,7 +65,18 @@ class postgress_logger():
         finally:
             return conn
     
-    
+    def set_variables_none(self):
+        self.flag = True
+        self.image_path = None
+        self.validation_flag = None
+        self.prediction = None
+        self.glioma_probability = None
+        self.meningioma_probability = None
+        self.no_tumor_probability = None
+        self.pituitary_probability = None
+        self.time_taken = None
+        self.correlation = None
+        
     def push_to_postgres(self):
         if not self.flag:
             # Implement your logic to push data to PostgreSQL here
@@ -88,9 +99,10 @@ class postgress_logger():
                         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
                     """
                     data = (self.image_path,self.validation_flag,self.prediction,AsIs(self.glioma_probability),AsIs(self.meningioma_probability),AsIs(self.no_tumor_probability),AsIs(self.pituitary_probability), AsIs(self.time_taken),AsIs(self.correlation))
-                    print(data)
+                    # print(data)
                     cursor.execute(query, data)  # Execute the insert statement
                     self.conn.commit()
+                    self.set_variables_none()
                     print("Data pushed to PostgreSQL")
                 except Exception as e:
                     print(f"Error pushing data to PostgreSQL: {e}")
@@ -120,6 +132,7 @@ class postgress_logger():
                     cursor.execute(query, data)
                     self.conn.commit()
                     print("Data pushed to PostgreSQL")
+                    self.set_variables_none()
                 except Exception as e:
                     print(f"Error pushing data to PostgreSQL: {e}")
                 finally:
