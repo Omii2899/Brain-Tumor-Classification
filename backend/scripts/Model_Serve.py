@@ -16,8 +16,8 @@ class Model_Server:
     def __init__(self, stage):
         setup_logging("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
-        # keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
-        keyfile_path = "./app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+        #keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+        keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()

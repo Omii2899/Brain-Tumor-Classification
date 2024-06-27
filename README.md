@@ -1,10 +1,30 @@
 # Brain-Tumor-Classification
 
+![picture alt](assets/project.png)
+
 This project is designed to develop, deploy, and maintain a machine learning model for brain tumor classification. The project utilizes a Machine Learning Operations (MLOps) approach to streamline the development, deployment, and monitoring of the model. The project directory is structured to support data version control, modular coding, and containerized deployment.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Dataset Information](#dataset-information)
+3. [Project Workflow](#project-workflow)
+4. [Prerequisites](#prerequisites)
+5. [Description of Files and Folders](#description-of-files-and-folders)
+    - [Project Structure](#project-structure)
+    - [Source Code Files](#source-code-files)
+6. [Data Storage and Model Registry](#data-storage-and-model-registry)
+7. [Airflow Pipelines](#airflow-pipelines)
+    - [Data and Model Build Pipeline](#data-and-model-build-pipeline)
+    - [Model Retraining Pipeline](#model-retraining-pipeline)
+8. [Application Interface](#application-interface)
+9. [Contributors](#contributors)
 
 ## Introduction
 
-Brain tumors are a significant health challenge, with approximately 24,810 adults in the United States diagnosed in 2023. The complexity and variability of brain tumors make accurate diagnosis difficult, especially in regions lacking skilled medical professionals. This project leverages machine learning to develop an end-to-end ML pipeline for automated brain tumor detection, aiming to provide scalable, reliable, and timely diagnostic support.
+Brain tumors are one of the more common types of cancer, with approximately 24,810 adults in the United States diagnosed in 2023. The complexity and variability of brain tumors make accurate diagnosis challenging. Traditional methods rely on MRI, CT, and PET imaging techniques to indicate the presence of a tumor, with further classification often requiring invasive procedures such as stereotactic needle biopsy or open biopsy (craniotomy). These techniques are costly, time-consuming, and carry risks such as infection and other surgical complications.
+
+<br> Motivated by these challenges, we chose this topic for our MLOps project. By leveraging the principles of MLOps, we have developed an end-to-end ML pipeline for automated brain tumor detection. Our goal is to enhance the accuracy and efficiency of non-invasive imaging techniques, potentially reducing the need for invasive procedures. This approach aims to provide scalable, reliable, and timely diagnostic support.
 
 ## Dataset Information
 
@@ -36,103 +56,6 @@ Before you begin, ensure you have the following installed on your machine:
 - [Python](https://www.python.org/downloads/) 3.x
 - Pip (Python package installer)
 - Google Cloud Platform (GCP) Account
-
-## Getting Started
-
-To get started with the project, follow these steps:
-
-### 1. Clone the Repository
-
-Clone the repository using the following command:
-
-```sh
-git clone https://github.com/Omii2899/Brain-Tumor-Classification.git
-cd Brain-Tumor-Detection
-```
-
-### 2. Create a Python Virtual Environment
-Create a virtual environment to manage project dependencies:
-
-```sh
-pip install virtualenv
-python -m venv <virtual_environment_name>
-source <virtual_environment_name>/bin/activate 
-```
-
-### 3. Install the Dependencies
-Install the necessary dependencies using the requirements.txt file:
-
-```sh
-pip install -r requirements.txt
-```
-
-### 4. Get the Data from Remote Source
-Pull the data from the remote source using DVC:
-
-```sh
-dvc pull
-``` 
-
-### 5. Add the Key File:
-You need to add the key file in src/keys folder. For security purposes, we have not included this file. To obtain this file, please contact [Aadarsh](mailto:siddha.a@northeastern.edu)  
-
-## Model Train and Inference
-
-1. **Training and Inference**
-
-   - `build.py`: Initializes the Vertex AI platform, trains the model, and saves it to a bucket.
-   - `inference.py`: Utilizes the predict function for inference.
-
-2. **Docker Image Creation for Training and Serving**
-
-   - Setup Docker, create train and serve docker images, push to Artifact Repository:
-     ```sh
-     gcloud auth configure-docker us-central1-docker.pkg.dev
-     ```
-
-     **File paths**: `src/trainer/Dockerfile` and `src/serve/Dockerfile`
-
-     **Commands**:
-     ```sh
-     docker buildx build --platform linux/amd64 -f trainer/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1 . --load
-     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1
-
-     docker buildx build --platform linux/amd64 -f serve/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/serve:v1 . --load
-     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/
-
-serve:v1
-     ```
-
-## Running the data pipeline
-
-To run the pipeline, you can use Docker for containerization.
-
-1. Build the Docker Image
-```sh
-docker build -t image-name:tag-name .
-```
-2. Verify the image 
-```
-docker images
-```
-
-3. Run the built image
-```sh
-docker run -it --rm -p 8080:8080 image-name:tag-name
-```
-
-The application should now be running and accessible at [http://localhost:8080](http://localhost:8080).
-
-Use the below credentials:
-- **User**: mlopsproject
-- **Password**: admin
-
-*Note: If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with `sudo`.*
-
-4. Trigger the Airflow UI
-```sh
-python src/dags/datapipeline.py
-```
 
 
 ## Description of Files and Folders
@@ -196,10 +119,6 @@ python src/dags/datapipeline.py
 
    - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.             |
 
-### Description
-
-This data card provides an overview of the variables present in the dataset after preprocessing and feature engineering. Each variable has a specific role, data type, and description to help understand its significance in the context of brain tumor detection and classification using MRI images. This comprehensive data card can be included in the README file to provide clarity on the dataset's structure and the preprocessing steps applied. This dataset only includes image-related information and does not contain any personal information about patients.
-
 
 ## Data storage and Model Registry:
 
@@ -207,18 +126,18 @@ This data card provides an overview of the variables present in the dataset afte
 ![picture alt](assets/GCP-buckets.jpg)
 
 ### 2. Data buckets
-![picture alt](assets/data-bucket.png)
 
 - **/data**: This directory contains the dataset used for training and testing the ML model.
 - **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
   - **ImageLogs/**: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
   - **ImageLogsWithFeedback/**: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
-  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI 
+  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI. 
 
-### DAG:
+![picture alt](assets/data-bucket.png)
+
+## Airflow Pipelines:
 
 #### 1. Data and model build pipeline
-![picture alt](assets/data-pipeline.jpg)
 
 1. **check_source**: Checking the data source to verify its availability.
 2. **download_data**: Downloading the necessary data if the source is valid.
@@ -228,8 +147,9 @@ This data card provides an overview of the variables present in the dataset afte
 6. **building_model**: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
 7. **send_email**: Sends an email notification upon a successful model build.
 
+![picture alt](assets/data-pipeline.jpg)
+
 #### 2. Model Retraining pipeline
-![picture alt](assets/retrain-pipeline.jpg)
 
 1. **check_source_flag**: Checks if there are more than 50 images with feedback predicted images in the bucket.
 2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
@@ -237,25 +157,32 @@ This data card provides an overview of the variables present in the dataset afte
 4. **retrain_model**: Initiates the re-training of the model with updated data and stores the model in mlflow.
 5. **send_email**: Sends an email notification once model retraining is completed.
 
+![picture alt](assets/retrain-pipeline.jpg)
+
 Once the retraing is completed, we will have the new model registered on the mlflow server. We can then compare this new retrained model with the previous mdoels based on the below metrics table. 
 If the performance has improved we can proceed by registering the model and deploying it. After this the system will automatically use this new model for new predictions.
+
+### Model Metrics Table
 
 ![picture alt](assets/metrics.jpg)
 
 ## Application Interface
 
-![picture alt](assets/ui-1.png)
+Below is the interface of our brain tumor classification system, where users can upload MRI images in JPEG or JPG format. If a non-brain MRI image is uploaded, the UI will reject it. For valid images, the system provides a prediction, and users can submit feedback if they find the prediction unsatisfactory or incorrect. This feedback will be stored to improve our system.
+
+ > [!IMPORTANT]
+ > Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
+
+![picture alt](assets/UI-1.png)
+![picture alt](assets/UI-2.png)
+![picture alt](assets/UI-3.png)
 
 
-## **Disclaimer**
-
-**Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.**
 
 
 ## Contributors
 
-[Aadrash Siddha](https://github.com/Omii2899)  
-[Akshita Singh](https://github.com/akshita-singh-2000)  
-[Praneith Ranganath](https://github.com/Praneith)  
-[Shaun Kirtan](https://github.com/)  
-[Yashasvi Sharma](https://github.com/yashasvi14)
+[Aadrash Siddha](https://github.com/Omii2899) - Entire setup- Github, GCP, Docekr, Kubernetes, ELK, Postgres, cloud. <br>
+[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, documentation.<br>
+[Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
+[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow. 
