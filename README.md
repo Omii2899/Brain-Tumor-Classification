@@ -99,10 +99,6 @@ Before you begin, ensure you have the following installed on your machine:
 
    - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.             |
 
-### Description
-
-This data card provides an overview of the variables present in the dataset after preprocessing and feature engineering. Each variable has a specific role, data type, and description to help understand its significance in the context of brain tumor detection and classification using MRI images. This comprehensive data card can be included in the README file to provide clarity on the dataset's structure and the preprocessing steps applied. This dataset only includes image-related information and does not contain any personal information about patients.
-
 
 ## Data storage and Model Registry:
 
@@ -110,18 +106,18 @@ This data card provides an overview of the variables present in the dataset afte
 ![picture alt](assets/GCP-buckets.jpg)
 
 ### 2. Data buckets
-![picture alt](assets/data-bucket.png)
 
 - **/data**: This directory contains the dataset used for training and testing the ML model.
 - **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
   - **ImageLogs/**: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
   - **ImageLogsWithFeedback/**: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
-  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI 
+  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI. 
+
+![picture alt](assets/data-bucket.png)
 
 ### DAG:
 
 #### 1. Data and model build pipeline
-![picture alt](assets/data-pipeline.jpg)
 
 1. **check_source**: Checking the data source to verify its availability.
 2. **download_data**: Downloading the necessary data if the source is valid.
@@ -131,14 +127,17 @@ This data card provides an overview of the variables present in the dataset afte
 6. **building_model**: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
 7. **send_email**: Sends an email notification upon a successful model build.
 
+![picture alt](assets/data-pipeline.jpg)
+
 #### 2. Model Retraining pipeline
-![picture alt](assets/retrain-pipeline.jpg)
 
 1. **check_source_flag**: Checks if there are more than 50 images with feedback predicted images in the bucket.
 2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
 3. **flag_true**: Proceeds to model retraining if there are more than 50 wrongly predicted images.
 4. **retrain_model**: Initiates the re-training of the model with updated data and stores the model in mlflow.
 5. **send_email**: Sends an email notification once model retraining is completed.
+
+![picture alt](assets/retrain-pipeline.jpg)
 
 Once the retraing is completed, we will have the new model registered on the mlflow server. We can then compare this new retrained model with the previous mdoels based on the below metrics table. 
 If the performance has improved we can proceed by registering the model and deploying it. After this the system will automatically use this new model for new predictions.
@@ -157,8 +156,8 @@ If the performance has improved we can proceed by registering the model and depl
 
 ## Contributors
 
-[Aadrash Siddha](https://github.com/Omii2899) - Entire setup- Github, GCP, Docekr, Kubernetes, ELK, Postgres, cloud. 
-[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, documentation.
-[Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.
-[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, scoping and documentation.  
-[Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow.
+[Aadrash Siddha](https://github.com/Omii2899) - Entire setup- Github, GCP, Docekr, Kubernetes, ELK, Postgres, cloud. <br>
+[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, documentation.<br>
+[Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
+[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, scoping and documentation.<br>  
+[Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow. <br>
