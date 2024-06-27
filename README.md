@@ -133,35 +133,9 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 
    - `statistics.py`: Conducts statistical analysis on the dataset, calculating various descriptive statistics and generating insights about the data distribution and relationships between features.
 
-![picture alt](assets/metrics.jpg)
-   
 5. **Machine Learning Experiment Tracking**
 
-   - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.
-
-## Data Card After Preprocessing and Feature Engineering
-
-| Variable Name            | Role    | DType    | Description                                                                        |
-|--------------------------|---------|----------|------------------------------------------------------------------------------------|
-| Image_ID                 | ID      | int64    | Unique identifier for each MRI image                                               |
-| Acquisition_Date         | ID      | datetime | Date when the MRI image was acquired                                               |
-| Tumor_Type               | Target  | int64    | Category of tumor: 0 - No Tumor, 1 - Glioma, 2 - Meningioma, 3 - Pituitary         |
-| Image_Pixels             | Feature | ndarray  | Pixel values of the MRI image                                                      |
-| Image_Resolution         | Feature | int64    | Resolution of the MRI image                                                        |
-| Image_Width              | Feature | int64    | Width of the MRI image in pixels                                                   |
-| Image_Height             | Feature | int64    | Height of the MRI image in pixels                                                  |
-| Pixel_Spacing            | Feature | float64  | Spacing between pixels in the MRI image                                            |
-| Augmented                | Feature | bool     | Whether the image was augmented (True/False)                                       |
-| Augmentation_Type        | Feature | int64    | Type of augmentation applied (if any): 0 - None, 1 - Rotation, 2 - Flipping, etc.  |
-| Brain_Region             | Feature | int64    | Region of the brain shown in the MRI image                                         |
-| MRI_Machine_Type         | Feature | int64    | Type of MRI machine used for imaging                                               |
-| Image_Contrast           | Feature | float64  | Contrast level of the MRI image                                                    |
-| Noise_Level              | Feature | float64  | Noise level in the MRI image                                                       |
-| Preprocessing_Steps      | Feature | object   | List of preprocessing steps applied to the image                                   |
-| Is_Corrupted             | Feature | bool     | Whether the image is corrupted (True/False)                                        |
-| Tumor_Size               | Feature | float64  | Size of the tumor detected in the MRI image (if any)                               |
-| Diagnosis_Confirmed      | Feature | bool     | Whether the diagnosis has been confirmed by a professional (True/False)            |
-| Diagnosis_Date           | Feature | datetime | Date when the diagnosis was confirmed                                              |
+   - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.             |
 
 ### Description
 
@@ -250,20 +224,25 @@ python src/dags/datapipeline.py
 
 1. **check_source**: Checking the data source to verify its availability.
 2. **download_data**: Downloading the necessary data if the source is valid.
-3. **capture_statistics**: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
-4. **augment_input_data**: Performing data augmentation, feature engineering, and other preprocessing steps.
-5. **transform_testing_data**: Transforming the testing data to ensure it is in the correct format for model evaluation.
-6. **building_model**: Builds the machine learning model using the prepared data.
+3. **capture_statistics**: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics. This step also generates a histogram.pkl file that is used by our system for user input image validation.
+4. **augment_input_data**: This step preprocesses the images by normalizing the pixel values. We have also applied several augmentations to enhance the robustness of our model such as rotating images, shifting them horizontally and vertically, shearing up to 10 degrees, zooming in or out, and randomly flipping them horizontally. Any empty areas created by these transformations are filled using the nearest pixel values. 
+5. **transform_testing_data**: Here the test images are normalized to ensure they are in the correct format for our model, improving its performance and accuracy.
+6. **building_model**: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
 7. **send_email**: Sends an email notification upon a successful model build.
 
 #### 2. Model Retraining pipeline
 ![picture alt](assets/retrain-pipeline.jpg)
 
-1. **check_source_flag**: Checks if there are more than 50 wrongly predicted images in the bucket.
+1. **check_source_flag**: Checks if there are more than 50 images with feedback predicted images in the bucket.
 2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
 3. **flag_true**: Proceeds to model retraining if there are more than 50 wrongly predicted images.
-4. **retrain_model**: Initiates the re-training of the model with updated data.
+4. **retrain_model**: Initiates the re-training of the model with updated data and stores the model in mlflow.
 5. **send_email**: Sends an email notification once model retraining is completed.
+
+Once the retraing is completed, we will have the new model registered on the mlflow server. We can then compare this new retrained model with the previous mdoels based on the below metrics table. 
+If the performance has improved we can proceed by registering the model and deploying it. After this the system will automatically use this new model for new predictions.
+
+![picture alt](assets/metrics.jpg)
 
 ## Application Interface
 
