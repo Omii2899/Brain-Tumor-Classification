@@ -16,8 +16,8 @@ class Model_Server:
     def __init__(self, stage):
         setup_logging().info("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
-        #keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
-        keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+        keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
+        # keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = keyfile_path
         self.stage = stage
         self._loadmodel()
@@ -64,10 +64,10 @@ class Model_Server:
     
         # Load and make prediction
         self.img_array = load_and_preprocess_image(img_path)
-        preds = self.loaded_model.predict(self.img_array)
+        self.preds = self.loaded_model.predict(self.img_array)
 
         # Extract class info and create folder path to upload
-        prediction_class = self._prediction(pred=preds)
+        prediction_class = self._prediction(pred=self.preds)
         setup_logging().info(f"Serving model for image: {img_path} ; Prediction: {prediction_class}")
 
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'
