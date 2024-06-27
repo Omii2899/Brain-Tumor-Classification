@@ -22,7 +22,7 @@ def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
 
     blob.upload_from_filename(source_file_name)
 
-    setup_logging().info(f"File {source_file_name} uploaded to {destination_blob_name}.")
+    setup_logging(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
@@ -32,12 +32,12 @@ def download_from_gcs(bucket_name, source_blob_name, destination_file_name):
 
     blob.download_to_filename(destination_file_name)
 
-    setup_logging().info(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
+    setup_logging(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
 
 def capture_histograms():
     base_dir = './data/Training/'
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
-    logger = setup_logging()
+    #logger = setup_logging()
     
     histograms = []
 
@@ -66,18 +66,18 @@ def capture_histograms():
                             valid_histograms.append(hist_image)
 
                     except Exception as e:
-                        setup_logging().error(f"Error processing image {image_path}: {e}")
+                        setup_logging(f"Error processing image {image_path}: {e}", log_level='ERROR')
 
                 histograms.extend(valid_histograms)
-                setup_logging().info(f"Captured {len(valid_histograms)} histograms for class {cls}")
+                setup_logging(f"Captured {len(valid_histograms)} histograms for class {cls}")
 
             except Exception as e:
-                setup_logging().error(f"Error processing images in folder {folder_path}: {e}")
+                setup_logging(f"Error processing images in folder {folder_path}: {e}", log_level="EXCEPTION")
         else:
-            setup_logging().info(f"No images found in directory: {folder_path}")
+            setup_logging(f"No images found in directory: {folder_path}")
             return False
     
-    setup_logging().info("Finished capturing histograms")
+    setup_logging("Finished capturing histograms")
 
     try:
         local_histogram_path = './histograms.pkl'
@@ -86,13 +86,13 @@ def capture_histograms():
         print("Histogram data saved locally to histograms.pkl")
 
         upload_to_gcs(BUCKET_NAME, HISTOGRAMS_FILE, local_histogram_path)
-        setup_logging().info("Histogram data uploaded to GCS")
+        setup_logging("Histogram data uploaded to GCS")
 
     except Exception as e:
-        setup_logging().error(f"Error saving histogram data: {e}")
+        setup_logging(f"Error saving histogram data: {e}", log_level='ERROR')
         return False
     
-    setup_logging().info("Finished method: capture_histograms")
+    setup_logging("Finished method: capture_histograms")
     return True
 
 def validate_image(image):
@@ -102,9 +102,9 @@ def validate_image(image):
         download_from_gcs(BUCKET_NAME, HISTOGRAMS_FILE, local_histogram_path)
         with open(local_histogram_path, 'rb') as f:
             histograms = pickle.load(f)
-        setup_logging().info("Loaded histograms from histograms.pkl")
+        setup_logging("Loaded histograms from histograms.pkl")
     except Exception as e:
-        setup_logging().error(f"Failed to load histograms: {e}")
+        setup_logging(f"Failed to load histograms: {e}")
         return False
     
     load_image = cv2.imread(image)
@@ -113,10 +113,10 @@ def validate_image(image):
 
     for hist in histograms:
         correlation = cv2.compareHist(histogram, hist, cv2.HISTCMP_CORREL)
-        print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
+        setup_logging(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
             return True
 
-    setup_logging().info("Finished method: validate_image")   
+    setup_logging("Finished method: validate_image")   
     return False
 

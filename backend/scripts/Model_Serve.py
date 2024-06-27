@@ -14,7 +14,7 @@ import uuid
 class Model_Server:
 
     def __init__(self, stage):
-        setup_logging().info("Object Created: Model_Server")
+        setup_logging("Object Created: Model_Server")
         # Set the environment variable to point to the service account key file
         keyfile_path = "../backend/keys/tensile-topic-424308-d9-7418db5a1c90.json"
         # keyfile_path = "../app/keys/tensile-topic-424308-d9-7418db5a1c90.json"
@@ -25,14 +25,14 @@ class Model_Server:
     def _loadmodel(self):
         
         model_name = 'Model_1_50_50'
-        setup_logging().info("Method started: loadmodel")
+        setup_logging("Method started: loadmodel")
         os.environ['MLFLOW_GCS_BUCKET'] = 'ml-flow-remote-tracker-bucket'
 
         mlflow.set_tracking_uri("http://35.231.231.140:5000/")
         mlflow.set_experiment("Brain-Tumor-Classification")
 
         client = MlflowClient()
-        setup_logging().info(f"Loading model : {model_name}, Stage : {self.stage}")
+        setup_logging(f"Loading model : {model_name}, Stage : {self.stage}")
         model_metadata = client.get_latest_versions(model_name, stages=[self.stage])
 
         if len(model_metadata)>1:
@@ -53,11 +53,11 @@ class Model_Server:
         else:
             logged_model = f'runs:/{model_metadata[0].run_id}/model'
 
-        setup_logging().info(f"Loading model: {logged_model}")
+        setup_logging(f"Loading model: {logged_model}")
 
         # Load model as a PyFuncModel.
         self.loaded_model = mlflow.pyfunc.load_model(logged_model)
-        setup_logging().info("Method finished: loadmodel")
+        setup_logging("Method finished: loadmodel")
         
 
     def serve_model(self, img_path):
@@ -75,13 +75,14 @@ class Model_Server:
     
     # Explain prediction made using LIME
     def explain_pred(self):
-        setup_logging().info(f"Inference explained")
+        setup_logging(f"Inference explained")
         return (explain_inference(self.img_array, self.loaded_model))
     
     
     def generate_unique_filename(self, existing_filenames, extension='jpg'):
         while True:
             random_name = f"{uuid.uuid4().hex}.{extension}"
+            setup_logging(f"Random filename generated:{random_name}")
             if random_name not in existing_filenames:
                 return random_name
 

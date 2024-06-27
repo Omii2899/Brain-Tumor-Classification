@@ -15,7 +15,7 @@ from scripts.logger import setup_logging
 from scripts.postgres_connection import postgress_logger
 
 app = FastAPI()
-setup_logging().info("FastAPI application started")
+setup_logging("FastAPI application started")
 
 ms = Model_Server(stage='Staging')
 postgres_log = postgress_logger()
@@ -24,7 +24,7 @@ postgres_log = postgress_logger()
 
 @app.get("/")
 def read_root():
-    setup_logging().info("Root endpoint accessed")
+    setup_logging("Root endpoint accessed")
     return {"message": "Welcome to the Brain Tumor Classification API"}
 
 @app.post("/predict/")
@@ -88,6 +88,5 @@ async def feedback(file_name: str = Form(...), corrected_label: str = Form(...),
     postgres_log.feedback_class = corrected_label
     postgres_log.push_feedback_postgres()
     ms.move_file_in_bucket(file_name, original_folder, feedback_folder)
-    setup_logging().info(f"Feedback recorded for file: {file_name}, corrected label: {corrected_label}")
-    #return JSONResponse(content={"message": "Feedback recorded and image moved successfully."})
+    setup_logging(f"Feedback recorded for file: {file_name}, corrected label: {corrected_label}")
     return JSONResponse(content={})
