@@ -17,9 +17,11 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-frontend/frontend:aadarsh 
+          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-frontend/frontend:latest 
           imagePullPolicy: Always
           ports:
             - containerPort: 8501
-      # imagePullSecrets:
-      # - name: artifact-registry-secret
+          resources:
+            limits:
+              cpu: "0.4"
+              memory: "1"
