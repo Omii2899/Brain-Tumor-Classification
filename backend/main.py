@@ -31,6 +31,7 @@ def read_root():
 async def predict(file: UploadFile = File(...)):
     setup_logging("Predict endpoint accessed")
     contents = await file.read()
+    start_time = time.time()
     image = Image.open(io.BytesIO(contents))
     existing_filenames = ms.get_existing_filenames()
     file_name = ms.generate_unique_filename(existing_filenames)        

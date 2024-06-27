@@ -20,6 +20,34 @@ class postgress_logger():
         self.feedback_class = None
         self.time_taken = None 
     
+    @staticmethod
+    def create_schema(conn):
+        try:
+            cursor = conn.cursor()
+            schema_query = """
+                CREATE TABLE IF NOT EXISTS public.backendlogs (
+                    imagepath TEXT PRIMARY KEY,
+                    validation_flag BOOLEAN,
+                    correlation DOUBLE PRECISION,
+                    prediction TEXT,
+                    glioma_probability DOUBLE PRECISION,
+                    meningioma_probability DOUBLE PRECISION,
+                    no_tumor_probability DOUBLE PRECISION,
+                    pituitary_probability DOUBLE PRECISION,
+                    feedback_flag BOOLEAN,
+                    feedback_class TEXT,
+                    time_taken DOUBLE PRECISION,
+                    time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """
+            cursor.execute(schema_query)
+            conn.commit()
+            print("Schema created successfully")
+        except Exception as e:
+            print(f"Error creating schema: {e}")
+        finally:
+            cursor.close()
+            
     def make_connection(self):
         conn = None
         try:
@@ -30,15 +58,13 @@ class postgress_logger():
                 user="postgres",
                 password="admin"
             )
+            self.create_schema(conn)
             print("PostgreSQL connection is successful")
         except OperationalError as e:
             print(f"Error: {e}")
         finally:
             return conn
     
-    @staticmethod
-    def addapt_numpy_float64(numpy_float64):
-        return AsIs(numpy_float64)
     
     def push_to_postgres(self):
         if not self.flag:
@@ -50,12 +76,12 @@ class postgress_logger():
                     # Example query (replace with your actual insert query)
                     query = """
                         INSERT INTO public.backendlogs(
-                            imagepath_url,
+                            imagepath,
                             validation_flag,
                             prediction,
-                            glioma_probability_1,
-                            meningioma_probability_2,
-                            no_tumor_probability_3,
+                            glioma_probability,
+                            meningioma_probability,
+                            no_tumor_probability,
                             pituitary_probability,
                             time_taken,
                             correlation        
@@ -87,7 +113,7 @@ class postgress_logger():
                             feedback_flag = %s,
                             feedback_class = %s
                         WHERE
-                            imagepath_url = %s;
+                            imagepath = %s;
                     """
                     data = (self.feedback_flag, self.feedback_class, self.image_path)
                     print(data)
