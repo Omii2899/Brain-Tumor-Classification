@@ -43,7 +43,7 @@ All data used are sourced from publicly available datasets with proper usage per
 
 ## Project Workflow
 
-![picture alt](assets/model-architecture.png)
+![picture alt](assets/Model-architecture.png)
 
 ## Prerequisites
 
