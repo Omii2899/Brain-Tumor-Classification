@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend-container
-          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:latest
+          image: us-east1-docker.pkg.dev/tensile-topic-424308-d9/brain-tumor-classification-backend/backend:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
