@@ -48,6 +48,6 @@ def validate_image(image):
         print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
             return [True, correlation]
-    setup_logging().info(f"Image validated: {correlation}")   
-    setup_logging().info("Finished method: validate_image")   
+    setup_logging(f"Image validated: {correlation}")   
+    setup_logging("Finished method: validate_image")   
     return [False, correlation]
