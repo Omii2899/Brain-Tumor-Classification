@@ -21,10 +21,9 @@ The dataset combines MRI images from three sources: figshare, SARTAJ, and Br35H.
 
 All data used are sourced from publicly available datasets with proper usage permissions.
 
+## Project Workflow
 
-## Project workflow
-
-![picture alt](images/deployment_architecture.png)
+![picture alt](assets/model-architecture.png)
 
 ## Prerequisites
 
@@ -46,45 +45,99 @@ To get started with the project, follow these steps:
 
 Clone the repository using the following command:
 
-```
+```sh
 git clone https://github.com/Omii2899/Brain-Tumor-Classification.git
-```
-```
 cd Brain-Tumor-Detection
 ```
 
 ### 2. Create a Python Virtual Environment
 Create a virtual environment to manage project dependencies:
-```
+
+```sh
 pip install virtualenv
-```
-```
 python -m venv <virtual_environment_name>
-```
-```
 source <virtual_environment_name>/bin/activate 
 ```
 
 ### 3. Install the Dependencies
 Install the necessary dependencies using the requirements.txt file:
-```
+
+```sh
 pip install -r requirements.txt
 ```
 
 ### 4. Get the Data from Remote Source
 Pull the data from the remote source using DVC:
 
-```
+```sh
 dvc pull
 ``` 
 
 ### 5. Add the Key File:
 You need to add the key file in src/keys folder. For security purposes, we have not included this file. To obtain this file, please contact [Aadarsh](mailto:siddha.a@northeastern.edu)  
 
+## Model Train and Inference
+
+1. **Training and Inference**
+
+   - `build.py`: Initializes the Vertex AI platform, trains the model, and saves it to a bucket.
+   - `inference.py`: Utilizes the predict function for inference.
+
+2. **Docker Image Creation for Training and Serving**
+
+   - Setup Docker, create train and serve docker images, push to Artifact Repository:
+     ```sh
+     gcloud auth configure-docker us-central1-docker.pkg.dev
+     ```
+
+     **File paths**: `src/trainer/Dockerfile` and `src/serve/Dockerfile`
+
+     **Commands**:
+     ```sh
+     docker buildx build --platform linux/amd64 -f trainer/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1 . --load
+     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/trainer:v1
+
+     docker buildx build --platform linux/amd64 -f serve/Dockerfile -t us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/serve:v1 . --load
+     docker push us-east1-docker.pkg.dev/[YOUR_PROJECT_ID]/[FOLDER_NAME]/
+
+serve:v1
+     ```
+
+## Running the data pipeline
+
+To run the pipeline, you can use Docker for containerization.
+
+1. Build the Docker Image
+```sh
+docker build -t image-name:tag-name .
+```
+2. Verify the image 
+```
+docker images
+```
+
+3. Run the built image
+```sh
+docker run -it --rm -p 8080:8080 image-name:tag-name
+```
+
+The application should now be running and accessible at [http://localhost:8080](http://localhost:8080).
+
+Use the below credentials:
+- **User**: mlopsproject
+- **Password**: admin
+
+*Note: If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with `sudo`.*
+
+4. Trigger the Airflow UI
+```sh
+python src/dags/datapipeline.py
+```
+
 
 ## Description of Files and Folders
 #### Project Structure:
-```
+```plaintext
 ├── .dvc
 │   ├── config
 │   ├── .gitignore
@@ -117,162 +170,92 @@ You need to add the key file in src/keys folder. For security purposes, we have 
 ├── dockerfile
 ├── entrypoint.sh
 ├── requirements.txt
-
 ```
 
-#### Source code files:
+#### Source Code Files:
 
-<ol>
-    <li><strong>Data Version Control (DVC)</strong>
-        <ul>
-            <li><strong>config</strong>: DVC configuration file for setting up data versioning.</li>
-            <li><strong>.gitignore</strong>: Specifies which DVC files should be ignored by Git.</li>
-        </ul>
-    </li>
-    <br>
-    <br>
-    <li><strong>Frontend</strong>
-        <ul>
-            <li><strong>app.py</strong>: Main streamlit application file for the frontend.</li>
-            <li><strong>dockerfile</strong>: Dockerfile to build the frontend application into a Docker image.</li>
-            <li><strong>requirements.txt</strong>: Lists the Python dependencies for the frontend.</li>
-            <li><strong>kubernetes</strong>:
-                <ul>
-                    <li><strong>deployment.yaml</strong>: Kubernetes deployment configuration for the frontend.</li>
-                    <li><strong>namespace.yaml</strong>: Kubernetes namespace configuration.</li>
-                    <li><strong>service.yaml</strong>: Kubernetes service configuration.</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Backend</strong>
-        <ul>
-            <li><strong>(empty folder)</strong>: Placeholder for backend-related files.</li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Source</strong>
-        <ul>
-            <li><strong>dags</strong>:
-                <ul>
-                    <li><strong>datapipeline.py</strong>: Orchestrates the initial data pipeline and model building process</li>
-                    <li><strong>retraining_pipeline.py</strong>: Orchestrates the model retraining pipeline based on certain flags</li>
-                </ul>
-            </li>
-            <li><strong>keys</strong>: Files containing keys or credentials needed for the project.
-            </li>
-            <li><strong>scripts</strong>:
-                <ul>
-                    <li><strong>logger.py</strong>: Sets up and configures logging for the project. It creates a logger instance with a specific format and log level.</li>
-                    <li><strong>preprocessing.py</strong>: Handles image preprocessing for both training and testing phases using TensorFlow's <code>ImageDataGenerator</code>
-                    <li><strong>statistics.py</strong>: Captures statistics of each image in each class, generates histograms, and validates images against these histograms using OpenCV.</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Configuration and Ignore Files</strong>
-        <ul>
-            <li><strong>.dvcignore</strong>: Specifies files and directories that DVC should ignore.</li>
-            <li><strong>.gitignore</strong>: Specifies files and directories that Git should ignore.</li>
-            <li><strong>data.dvc</strong>: DVC data tracking file.</li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Docker Configuration</strong>
-        <ul>
-            <li><strong>dockerfile</strong>: Contains instructions to build a Docker image for the project.</li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Entry Point</strong>
-        <ul>
-            <li><strong>entrypoint.sh</strong>: Shell script to set up the environment and run the application inside Docker.</li>
-        </ul>
-    </li>
-    <br>
-    <li><strong>Dependencies</strong>
-        <ul>
-            <li><strong>requirements.txt</strong>: Lists the Python dependencies needed for the project.</li>
-        </ul>
-    </li>
-</ol>
+**The below files are in the `src` folder**
 
-## Running the data pipeline
-To run the pipeline, you can use Docker for containerization.
+1. **Data Pipeline**
 
-1. Build the Docker Image
-```
-docker build -t image-name:tag-name .
-```
-2. Verify the image 
-```
-docker images
-```
+   - `datapipeline.py`: Orchestrates the entire data processing workflow, including data ingestion, preprocessing, and feature engineering.
 
-3. Run the built image
-```
-docker run -it --rm -p 8080:8080 image-name:tag-name
-```
+2. **Logging Configuration**
 
-The application should now be running and accessible at <code> http://localhost:8080 </code>.
+   - `logger.py`: Configures the logging system for the project, defining log formats, levels, and handlers to ensure proper tracking and debugging of processes.
 
-Use the below credentials-
-<code> User: mlopsproject</code>
-<code> Password: admin</code>
+3. **Initial Preprocessing**
 
-<i>Note: 
-If the commands fail to execute, ensure that virtualization is enabled in your BIOS settings. Additionally, if you encounter permission-related issues, try executing the commands by prefixing them with <code>sudo</code></i>.
+   - `preprocessing.py`: Performs initial preprocessing tasks on the dataset, such as cleaning, normalization, and transformation of raw data into a suitable format for further analysis and model training.
 
-4. Trigger the airflow UI
-```
-python src/dags/datapipeline.py
-```
+4. **Statistical Analysis**
 
-### Data storage and Model Registry:
+   - `statistics.py`: Conducts statistical analysis on the dataset, calculating various descriptive statistics and generating insights about the data distribution and relationships between features.
 
-#### 1. Storage buckets-
-![picture alt](images/GCP-buckets.jpg)
+5. **Machine Learning Experiment Tracking**
+
+   - `example-mlflow.ipynb`: A Jupyter notebook demonstrating the use of MLflow for tracking machine learning experiments, including logging parameters, metrics, and model artifacts.             |
+
+### Description
+
+This data card provides an overview of the variables present in the dataset after preprocessing and feature engineering. Each variable has a specific role, data type, and description to help understand its significance in the context of brain tumor detection and classification using MRI images. This comprehensive data card can be included in the README file to provide clarity on the dataset's structure and the preprocessing steps applied. This dataset only includes image-related information and does not contain any personal information about patients.
 
 
-#### 2. Data buckets-
-![picture alt](images/data-bucket.jpg)
+## Data storage and Model Registry:
 
-<ul>
-    <li><strong>/data:</strong> This directory contains the dataset used for training and testing the ML model.</li>
-    <li><strong>InferenceLogs/:</strong> This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
-        <ul>
-            <li><strong>ImageLogs/:</strong> Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.</li>
-            <li><strong>ImageLogsWithFeedback/:</strong> Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.</li>
-        </ul>
-    </li>
-</ul>
+### 1. Storage buckets
+![picture alt](assets/GCP-buckets.jpg)
 
+### 2. Data buckets
+![picture alt](assets/data-bucket.png)
+
+- **/data**: This directory contains the dataset used for training and testing the ML model.
+- **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
+  - **ImageLogs/**: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
+  - **ImageLogsWithFeedback/**: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
+  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI 
 
 ### DAG:
 
-#### 1. Data and model build pipeline-
+#### 1. Data and model build pipeline
+![picture alt](assets/data-pipeline.jpg)
 
-![picture alt](images/data-pipeline.jpg)
+1. **check_source**: Checking the data source to verify its availability.
+2. **download_data**: Downloading the necessary data if the source is valid.
+3. **capture_statistics**: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics. This step also generates a histogram.pkl file that is used by our system for user input image validation.
+4. **augment_input_data**: This step preprocesses the images by normalizing the pixel values. We have also applied several augmentations to enhance the robustness of our model such as rotating images, shifting them horizontally and vertically, shearing up to 10 degrees, zooming in or out, and randomly flipping them horizontally. Any empty areas created by these transformations are filled using the nearest pixel values. 
+5. **transform_testing_data**: Here the test images are normalized to ensure they are in the correct format for our model, improving its performance and accuracy.
+6. **building_model**: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
+7. **send_email**: Sends an email notification upon a successful model build.
 
-<ol> <li><strong>check_source:</strong> Checking the data source to verify its availability.
-<li><strong> download_data:</strong> Downloading the necessary data if the source is valid.
-<li><strong> capture_statistics:</strong> Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics.
-<li> <strong>augment_input_data:</strong> Perfomring data augmentation, feature engineering, and other preprocessing steps.
-<li><strong>transform_testing_data:</strong> Transforming the testing data to ensure it is in the correct format for model evaluation.
-<li><strong> building_model:</strong> Builds the machine learning model using the prepared data.
-<li> <strong>send_email:</strong> Sends an email notification upon a successful model build.
+#### 2. Model Retraining pipeline
+![picture alt](assets/retrain-pipeline.jpg)
 
-</ol>
+1. **check_source_flag**: Checks if there are more than 50 images with feedback predicted images in the bucket.
+2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
+3. **flag_true**: Proceeds to model retraining if there are more than 50 wrongly predicted images.
+4. **retrain_model**: Initiates the re-training of the model with updated data and stores the model in mlflow.
+5. **send_email**: Sends an email notification once model retraining is completed.
 
-#### 2. Model Retraining pipeline-
-![picture alt](images/retrain-pipeline.jpg)
+Once the retraing is completed, we will have the new model registered on the mlflow server. We can then compare this new retrained model with the previous mdoels based on the below metrics table. 
+If the performance has improved we can proceed by registering the model and deploying it. After this the system will automatically use this new model for new predictions.
+
+![picture alt](assets/metrics.jpg)
 
 ## Application Interface
 
-![picture alt](images/ui-1.png)
+![picture alt](assets/ui-1.png)
+
+
+## **Disclaimer**
+
+**Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.**
+
 
 ## Contributors
 
-[Aadrash Siddha](https://github.com/Omii2899) <br> [Akshita Singh](https://github.com/akshita-singh-2000) <br>  [Praneith Ranganath](https://github.com/Praneith) <br>  [Shaun Kirtan](https://github.com/) <br>   [Yashasvi Sharma](https://github.com/yashasvi14) 
+[Aadrash Siddha](https://github.com/Omii2899)  
+[Akshita Singh](https://github.com/akshita-singh-2000)  
+[Praneith Ranganath](https://github.com/Praneith)  
+[Shaun Kirtan](https://github.com/)  
+[Yashasvi Sharma](https://github.com/yashasvi14)
