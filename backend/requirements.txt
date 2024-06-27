@@ -8,3 +8,4 @@ tensorflow
 google-cloud-storage
 opencv-python-headless
 python-dotenv
+psycopg2
