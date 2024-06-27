@@ -169,6 +169,6 @@ mlruns/
 model_runs/
 /src/keys
 
-/backend/keys/tensile-topic-424308-d9-7418db5a1c90.json
+/backend/keys
 /src/dags/scripts/histograms.pkl
 vmlops/
