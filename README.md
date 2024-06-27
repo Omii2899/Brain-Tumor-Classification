@@ -1,6 +1,24 @@
 # Brain-Tumor-Classification
 
+![picture alt](assets/project.png)
+
 This project is designed to develop, deploy, and maintain a machine learning model for brain tumor classification. The project utilizes a Machine Learning Operations (MLOps) approach to streamline the development, deployment, and monitoring of the model. The project directory is structured to support data version control, modular coding, and containerized deployment.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Dataset Information](#dataset-information)
+3. [Project Workflow](#project-workflow)
+4. [Prerequisites](#prerequisites)
+5. [Description of Files and Folders](#description-of-files-and-folders)
+    - [Project Structure](#project-structure)
+    - [Source Code Files](#source-code-files)
+6. [Data Storage and Model Registry](#data-storage-and-model-registry)
+7. [Airflow Pipelines](#airflow-pipelines)
+    - [Data and Model Build Pipeline](#data-and-model-build-pipeline)
+    - [Model Retraining Pipeline](#model-retraining-pipeline)
+8. [Application Interface](#application-interface)
+9. [Contributors](#contributors)
 
 ## Introduction
 
@@ -115,7 +133,7 @@ Before you begin, ensure you have the following installed on your machine:
 
 ![picture alt](assets/data-bucket.png)
 
-### DAG:
+## Airflow Pipelines:
 
 #### 1. Data and model build pipeline
 
@@ -160,4 +178,4 @@ If the performance has improved we can proceed by registering the model and depl
 [Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, documentation.<br>
 [Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
 [Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, scoping and documentation.<br>  
-[Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow. <br>
+[Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow. 
