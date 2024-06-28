@@ -24,7 +24,8 @@ This project is designed to develop, deploy, and maintain a machine learning mod
 ## Introduction
 
 Brain tumors are one of the more common types of cancer, with approximately 24,810 adults in the United States diagnosed in 2023. The complexity and variability of brain tumors make accurate diagnosis challenging. Traditional methods rely on MRI, CT, and PET imaging techniques to indicate the presence of a tumor, with further classification often requiring invasive procedures such as stereotactic needle biopsy or open biopsy (craniotomy). These techniques are costly, time-consuming, and carry risks such as infection and other surgical complications.
-<br> Motivated by these challenges, we chose this topic for our MLOps project. By leveraging the principles of MLOps, we have developed an end-to-end ML pipeline for automated brain tumor detection. Our goal is to enhance the accuracy and efficiency of non-invasive imaging techniques, potentially reducing the need for invasive procedures. This approach aims to provide scalable, reliable, and timely diagnostic support.
+
+Motivated by these challenges, we chose this topic for our MLOps project. By leveraging the principles of MLOps, we have developed an end-to-end ML pipeline for automated brain tumor detection. Our goal is to enhance the accuracy and efficiency of non-invasive imaging techniques, potentially reducing the need for invasive procedures. This approach aims to provide scalable, reliable, and timely diagnostic support.
 
 ## Dataset Information
 
@@ -127,11 +128,11 @@ Before you begin, ensure you have the following installed on your machine:
 
 ### 2. Data buckets
 
-- **/data**: This directory contains the dataset used for training and testing the ML model.
-- **InferenceLogs/**: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
-  - **ImageLogs/**: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
-  - **ImageLogsWithFeedback/**: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
-  - **ImageLogsForInvalidImages/**: Subfolder for storing user input images that where invalid or images that where not Brain MRI. 
+- `/data`: This directory contains the dataset used for training and testing the ML model.
+- `InferenceLogs/`: This directory is dedicated to storing inference logs, facilitating model evaluation and improvement:
+  - `ImageLogs/`: Subfolder for storing user input images along with correct predictions made by the model. These logs are valuable for validating model accuracy.
+  - `ImageLogsWithFeedback/`: Subfolder for storing user input images that were incorrectly predicted by the model, categorized by the label provided by the user. This data is essential for retraining and enhancing the model's performance.
+  - `ImageLogsForInvalidImages/`: Subfolder for storing user input images that where invalid or images that where not Brain MRI. 
 
 ![picture alt](assets/data-bucket.png)
 
@@ -139,23 +140,23 @@ Before you begin, ensure you have the following installed on your machine:
 
 #### 1. Data and model build pipeline
 
-1. **check_source**: Checking the data source to verify its availability.
-2. **download_data**: Downloading the necessary data if the source is valid.
-3. **capture_statistics**: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics. This step also generates a histogram.pkl file that is used by our system for user input image validation.
-4. **augment_input_data**: This step preprocesses the images by normalizing the pixel values. We have also applied several augmentations to enhance the robustness of our model such as rotating images, shifting them horizontally and vertically, shearing up to 10 degrees, zooming in or out, and randomly flipping them horizontally. Any empty areas created by these transformations are filled using the nearest pixel values. 
-5. **transform_testing_data**: Here the test images are normalized to ensure they are in the correct format for our model, improving its performance and accuracy.
-6. **building_model**: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
-7. **send_email**: Sends an email notification upon a successful model build.
+1. `check_source`: Checking the data source to verify its availability.
+2. `download_data`: Downloading the necessary data if the source is valid.
+3. `capture_statistics`: Captures statistics about the data, such as summary statistics, distributions, and other relevant metrics. This step also generates a histogram.pkl file that is used by our system for user input image validation.
+4. `augment_input_data`: This step preprocesses the images by normalizing the pixel values. We have also applied several augmentations to enhance the robustness of our model such as rotating images, shifting them horizontally and vertically, shearing up to 10 degrees, zooming in or out, and randomly flipping them horizontally. Any empty areas created by these transformations are filled using the nearest pixel values. 
+5. `transform_testing_data`: Here the test images are normalized to ensure they are in the correct format for our model, improving its performance and accuracy.
+6. `building_model`: Builds the machine learning model using the prepared data and send it to mlfow server where it can be registered. 
+7. `send_email`: Sends an email notification upon a successful model build.
 
 ![picture alt](assets/data-pipeline.jpg)
 
 #### 2. Model Retraining pipeline
 
-1. **check_source_flag**: Checks if there are more than 50 images with feedback predicted images in the bucket.
-2. **flag_false**: Ends the process if there are 50 or fewer wrongly predicted images.
-3. **flag_true**: Proceeds to model retraining if there are more than 50 wrongly predicted images.
-4. **retrain_model**: Initiates the re-training of the model with updated data and stores the model in mlflow.
-5. **send_email**: Sends an email notification once model retraining is completed.
+1. `check_source_flag`: Checks if there are more than 50 images with feedback predicted images in the bucket.
+2. `flag_false`: Ends the process if there are 50 or fewer wrongly predicted images.
+3. `flag_true`: Proceeds to model retraining if there are more than 50 wrongly predicted images.
+4. `retrain_model`: Initiates the re-training of the model with updated data and stores the model in mlflow.
+5. `send_email`: Sends an email notification once model retraining is completed.
 
 ![picture alt](assets/retrain-pipeline.jpg)
 
@@ -170,10 +171,10 @@ If the performance has improved we can proceed by registering the model and depl
 
 Below is the interface of our brain tumor classification system, where users can upload MRI images in JPEG or JPG format. If a non-brain MRI image is uploaded, the UI will reject it. For valid images, the system provides a prediction, and users can submit feedback if they find the prediction unsatisfactory or incorrect. This feedback will be stored to improve our system.
 
-Link: <source> http://35.231.160.55/ </source>
+Link: `http://35.231.160.55/`
 
  > [!IMPORTANT]
- > Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent.
+ > <i> Please note that any images you upload will be stored with us. By uploading an image, you consent to its storage and use for the purposes of improving our brain tumor classification model. We are committed to ensuring the privacy and security of your data and will not share it with any third parties without your explicit consent. </i>
 
 ![picture alt](assets/UI-1.png)
 ![picture alt](assets/UI-2.png)
@@ -186,6 +187,6 @@ Link: <source> http://35.231.160.55/ </source>
 ## Contributors
 
 [Aadrash Siddha](https://github.com/Omii2899) - Entire setup- Github, GCP, Docekr, Kubernetes, ELK, Postgres, cloud. <br>
-[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, documentation.<br>
+[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, monitoring, documentation.<br>
 [Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
-[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow. 
+[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, dashboard, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow, monitoring. 
