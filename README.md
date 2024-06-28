@@ -190,8 +190,3 @@ Link: `http://35.231.160.55/`
 [Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, monitoring, documentation.<br>
 [Praneith Ranganath](https://github.com/P101010) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
 [Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, dashboard, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow, monitoring. 
-[Aadrash Siddha](https://github.com/Omii2899)  
-[Akshita Singh](https://github.com/akshita-singh-2000)  
-[Praneith Ranganath](https://github.com/P101010)  
-[Shaun Kirtan](https://github.com/)  
-[Yashasvi Sharma](https://github.com/yashasvi14)
