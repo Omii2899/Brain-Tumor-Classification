@@ -256,6 +256,6 @@ If the performance has improved we can proceed by registering the model and depl
 
 [Aadrash Siddha](https://github.com/Omii2899)  
 [Akshita Singh](https://github.com/akshita-singh-2000)  
-[Praneith Ranganath](https://github.com/Praneith)  
+[Praneith Ranganath](https://github.com/P101010)  
 [Shaun Kirtan](https://github.com/)  
 [Yashasvi Sharma](https://github.com/yashasvi14)
