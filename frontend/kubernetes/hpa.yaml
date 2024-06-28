@@ -9,14 +9,14 @@ spec:
     kind: Deployment
     name: frontend-deployment
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 4
   metrics:
     - type: Resource
       resource:  
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 60
   behavior: 
     scaleDown:
       stabilizationWindowSeconds: 120 
@@ -28,5 +28,5 @@ spec:
       stabilizationWindowSeconds: 60  
       policies:
         - type: Pods
-          value: 2
+          value: 1
           periodSeconds: 60
