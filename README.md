@@ -183,13 +183,20 @@ Link: `http://35.231.160.55/`
 ## Monitoring Dashboard
 
 The below monitoring dashboard provides a comprehensive view of the performance and usage of our brain tumor classification system.
+
 1. **Count of Inferences**- To give a basic overview of the total number of inferences (predictions) made by the system.
+
 2. **Count of Inference Classes**-Break down  the number of inferences made for each class which will help in understanding the distribution of predictions across different tumor types. 
+
 3. **Average Probability by Class**- To get an insight into the model's confidence in its predictions for each class.
+
 4. **Number of Feedbacks Received**- This bar chart shows the number of feedback entries received, categorized by whether the feedback indicated a correct (True) or incorrect (False) prediction. This metric helps in monitoring the accuracy and reliability of the model.
+
 5. **Average Latency per Class**- This bar chart displays the average time taken to generate predictions for each class. It helps in assessing the performance and efficiency of the model in processing different types of MRI images.
+
 6. **Validated Images**- This pie chart shows the proportion of images that were validated (correctly classified) versus those that were not. It provides a quick visual representation of the model's validation accuracy.
-6. **Correlation**- The correlation chart indicates the validation status of user-input images. A value of 1 means a high correlation with our histogram.pkl file, confirming the image as a valid MRI. A value of 0 indicates a low correlation, suggesting the image may not be a valid MRI. If we notice a high frequency of 0 correlations, it may signal an issue with the validation process, potentially due to changes in MRI image formats. This will prompt us to review validation logs and update our system accordingly.
+
+7. **Correlation**- The correlation chart indicates the validation status of user-input images. A value of 1 means a high correlation with our histogram.pkl file, confirming the image as a valid MRI. A value of 0 indicates a low correlation, suggesting the image may not be a valid MRI. If we notice a high frequency of 0 correlations, it may signal an issue with the validation process, potentially due to changes in MRI image formats. This will prompt us to review validation logs and update our system accordingly.
 
 ![picture alt](assets/dashboard.jpeg)
 
@@ -199,3 +206,7 @@ The below monitoring dashboard provides a comprehensive view of the performance 
 [Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, monitoring, documentation.<br>
 [Praneith Ranganath](https://github.com/Praneith) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
 [Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, dashboard, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow, monitoring. 
+
+### Acknowledgments
+
+Special thanks to our Professor, [Ramin Mohammadi](https://github.com/raminmohammadi), for his guidance and support throughout this project.
