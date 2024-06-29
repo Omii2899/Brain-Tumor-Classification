@@ -47,7 +47,7 @@ def validate_image(image):
         correlation = cv2.compareHist(histogram, hist, cv2.HISTCMP_CORREL)
         print(f"Image {image} has a reference histogram with correlation: {correlation:.4f}")
         if correlation > 0.7:
-            return True
+            return [True, correlation]
     setup_logging(f"Image validated: {correlation}")   
     setup_logging("Finished method: validate_image")   
-    return False
+    return [False, correlation]

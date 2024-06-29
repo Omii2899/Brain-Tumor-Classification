@@ -64,10 +64,10 @@ class Model_Server:
     
         # Load and make prediction
         self.img_array = load_and_preprocess_image(img_path)
-        preds = self.loaded_model.predict(self.img_array)
+        self.preds = self.loaded_model.predict(self.img_array)
 
         # Extract class info and create folder path to upload
-        prediction_class = self._prediction(pred=preds)
+        prediction_class = self._prediction(pred=self.preds)
         setup_logging(f"Serving model for image: {img_path} ; Prediction: {prediction_class}")
 
         folder_name = f'InferenceLogs/ImageLogs/{prediction_class}/'
