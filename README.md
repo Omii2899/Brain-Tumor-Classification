@@ -207,6 +207,6 @@ The below monitoring dashboard provides a comprehensive view of the performance 
 [Praneith Ranganath](https://github.com/P101010) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
 [Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, dashboard, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow, monitoring. 
 
-### Acknowledgments
+## Acknowledgments
 
 Special thanks to our Professor, [Ramin Mohammadi](https://github.com/raminmohammadi), for his guidance and support throughout this project.
