@@ -202,10 +202,10 @@ The below monitoring dashboard provides a comprehensive view of the performance 
 
 ## Contributors
 
-[Aadrash Siddha](https://github.com/Omii2899) - Entire setup- Github, GCP, Docekr, Kubernetes, ELK, Postgres, cloud. <br>
-[Akshita Singh](https://github.com/akshita-singh-2000) - Mlflow, frontend, backend, monitoring, documentation.<br>
-[Praneith Ranganath](https://github.com/P101010) - Model, logs,data preprocessing, statistics, explainability, airlfow, CI/CD.<br>
-[Shaun Kirtan](https://github.com/)- Data preprocessing, CI/CD, dashboard, scoping and documentation.<br> [Yashasvi Sharma](https://github.com/yashasvi14) - Model, frontend, backend, airflow, monitoring. 
+[Aadrash Siddha](https://github.com/Omii2899)  <br>
+[Akshita Singh](https://github.com/akshita-singh-2000) <br>
+[Praneith Ranganath](https://github.com/P101010) <br>
+[Shaun Kirtan](https://github.com/)- <br> [Yashasvi Sharma](https://github.com/yashasvi14) 
 
 ## Acknowledgments
 
